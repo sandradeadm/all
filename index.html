@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | ABM Alumnos</title>
+    <link rel="icon" href="/assets/img/Logo.png" type="image/png">
+    <link rel="stylesheet" href="/assets/css/base.css">
+    <link rel="stylesheet" href="/assets/css/matriz.css">
+    <link rel="stylesheet" href="/assets/css/modal.css">
+    <link rel="stylesheet" href="/assets/css/btn.css">
+    <link rel="stylesheet" href="/assets/css/tablas.css">
+</head>
+<body>
+
+    <!--  Header  -->
+    <header>
+        <!--  Logo Izquierda  -->
+        <div>
+            <div class="header-logo">
+                <img src="/assets/img/Logo.png" alt="E.E.S.T N°4" class="logo-img">
+                <span class="logo-text">E.E.S.T N°4</span>
+            </div>
+        </div>
+        <!--  Nav  -->
+        <h1>Administación</h1>
+        <button id="menu-toggle" class="menu-btn">☰</button>
+        
+        <!-- Usuario derecha -->
+        <div class="user-menu">
+            <span class="user-name">Hola, @usuario</span>
+            <button class="logout-btn">Cerrar sesión</button>
+        </div>
+    </header>
+
+    <!--  Nav  -->
+    <nav>
+        <ul>
+            <li><a href="#" onclick="cargarVista('bienvenida.html')">Inicio</a></li>
+        </ul>
+        <ul>
+            <li><a href="#" onclick="cargarVista('alumnos.html')">Alumnos</a></li>
+        </ul>
+        <ul>
+            <li><a href="#">Administración</a></li>
+            <div class="megamenu">
+                <div class="columna-menu">
+                    <ul>
+                        <li><a href="#" onclick="cargarVista('cursos.html')">Cursos</a></li>
+                        <li><a href="#" onclick="cargarVista('materias.html')">Materias</a></li>
+                        <li><a href="#" onclick="cargarVista('planes.html')">Planes de estudio</a></li>
+                        <li><a href="#" onclick="cargarVista('tutores.html')">Tutores</a></li>
+                    </ul>
+                </div>
+            </div>
+        </ul>
+        <ul>
+            <li><a href="#">Administración del sistema</a></li>
+            <div class="megamenu">
+                <div class="columna-menu">
+                    <ul>
+                        <li><a href="#" onclick="cargarVista('usuarios.html')">Usuarios</a></li>
+                        <li><a href="#" onclick="cargarVista('roles.html')">Roles</a></li>
+                        <li class="nav-item"><a href="#" onclick="cargarVista('log.html')">Bitacora</a></li>
+                    </ul>
+                </div>
+            </div>
+        </ul>
+    </nav>
+
+    
+
+    <main>
+        <iframe class="frame" id="contenido" src="views/bienvenida.html" frameborder="0"></iframe>
+    </main>
+
+    <script src="assets/js/ui.js"></script>
+</body>
+</html>

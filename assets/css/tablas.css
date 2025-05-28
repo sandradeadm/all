@@ -1,0 +1,66 @@
+/* ==== Tablas CRUDs ==== */
+.tabla{
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.tabla thead{
+    background-color: #0077a6;
+    font-weight: bold;
+}
+.tabla th{
+    text-align: left;
+    padding: 0.7rem;
+    font-size: 1.1rem;
+    color: #fff;
+}
+.tabla td{
+    text-align: left;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    padding: 0.4rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+.tabla tbody tr:nth-child(even){
+    background-color: #f4f4f4;
+}
+.tabla tbody tr:hover{
+    background-color: #f1f1f1;
+}
+
+/* Modal perfil */
+.perfil-tabla{
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-left: 0.25rem;
+    margin-right: 0.5rem;
+}
+.perfil-tabla thead{
+    background-color: #ccc;
+    font-weight: bold;
+}
+.perfil-tabla th{
+    text-align: left;
+    padding: 0.5rem;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 1.1rem;
+    color: #001a24;
+}
+.perfil-tabla td{
+    border: 1px solid #f4f4f4;
+    min-width: 4rem;
+    max-width: 4rem;
+    padding: 0.25rem;
+    font-size: 1rem;
+}

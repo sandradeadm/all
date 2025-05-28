@@ -1,0 +1,38 @@
+/* Botón de cerrar */
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+.logout-btn {
+    background: linear-gradient(to left, #0077a6, #00b4d8);
+    color: #fff;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: solid 1px #000;
+}
+.logout-btn:hover {
+    background: linear-gradient(to right, #0077a6, #00b4d8);
+    color: #fff;
+}
+
+.tabla td button{
+    background: linear-gradient(to left, #0077a6, #00b4d8);
+    color: #fff;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 20%;
+    border: solid 1px #000;
+}
+.tabla td button:hover{
+    background: linear-gradient(to right, #0077a6, #00b4d8);
+    color: #fff;
+}

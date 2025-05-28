@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Grupos</title>
+    <link rel="stylesheet" href="/assets/css/tablas.css">
+    <style>
+        .expand-btn {
+            background: #00384a;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 12px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background 0.2s;
+            width: 32px;
+            text-align: center;
+        }
+        .expand-btn:hover {
+            background: #005d8f;
+        }
+        .user-list-row {
+            display: none;
+            background: #f8fafd;
+        }
+        .user-list-table {
+            width: 90%;
+            margin: 10px auto;
+            border-collapse: collapse;
+        }
+        .user-list-table th, .user-list-table td {
+            border: 1px solid #ddd;
+            padding: 6px 12px;
+            text-align: left;
+        }
+        .user-list-table th {
+            background: #00384a;
+            color: #fff;
+        }
+        .tabla .expanded {
+            display: table-row;
+        }
+    </style>
+</head>
+<body>
+    <h2>Gestión de Grupos de Usuarios</h2>
+    <table class="tabla">
+        <thead>
+            <tr>
+                <th>Grupo</th>
+                <th>Privilegios</th>
+                <th>Usuarios Asignados</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Administradores -->
+            <tr>
+                <td>Administradores</td>
+                <td>Acceso total: crear, modificar, eliminar, ver todo</td>
+                <td>
+                    <button class="expand-btn" onclick="toggleUsuarios(this, 'admin')">+</button>
+                </td>
+            </tr>
+            <tr class="user-list-row" id="usuarios-admin">
+                <td colspan="3">
+                    <table class="user-list-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre de usuario</th>
+                                <th>Nombre</th>
+                                <th>DNI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>sandradeadm</td>
+                                <td>Sandra Redondo</td>
+                                <td>30333444</td>
+                            </tr>
+                            <tr>
+                                <td>admin</td>
+                                <td>Admin Principal</td>
+                                <td>11111111</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <!-- Modificación -->
+            <tr>
+                <td>Modificación</td>
+                <td>Pueden crear y modificar registros, pero no eliminar</td>
+                <td>
+                    <button class="expand-btn" onclick="toggleUsuarios(this, 'modif')">+</button>
+                </td>
+            </tr>
+            <tr class="user-list-row" id="usuarios-modif">
+                <td colspan="3">
+                    <table class="user-list-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre de usuario</th>
+                                <th>Nombre</th>
+                                <th>DNI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>juanp</td>
+                                <td>Juan Pérez</td>
+                                <td>22111222</td>
+                            </tr>
+                            <tr>
+                                <td>anag</td>
+                                <td>Ana García</td>
+                                <td>32323232</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <!-- Lectura -->
+            <tr>
+                <td>Lectura</td>
+                <td>Solo pueden ver información, sin modificar</td>
+                <td>
+                    <button class="expand-btn" onclick="toggleUsuarios(this, 'lectura')">+</button>
+                </td>
+            </tr>
+            <tr class="user-list-row" id="usuarios-lectura">
+                <td colspan="3">
+                    <table class="user-list-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre de usuario</th>
+                                <th>Nombre</th>
+                                <th>DNI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>carlosl</td>
+                                <td>Carlos López</td>
+                                <td>44777888</td>
+                            </tr>
+                            <tr>
+                                <td>luciaf</td>
+                                <td>Lucía Fernández</td>
+                                <td>45612378</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <!-- Escritura -->
+            <tr>
+                <td>Escritura</td>
+                <td>Pueden crear nuevos registros, pero no modificarlos ni eliminarlos</td>
+                <td>
+                    <button class="expand-btn" onclick="toggleUsuarios(this, 'escritura')">+</button>
+                </td>
+            </tr>
+            <tr class="user-list-row" id="usuarios-escritura">
+                <td colspan="3">
+                    <table class="user-list-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre de usuario</th>
+                                <th>Nombre</th>
+                                <th>DNI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>lauram</td>
+                                <td>Laura Martínez</td>
+                                <td>40112233</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        function toggleUsuarios(btn, grupo) {
+            // Cierra otras filas abiertas
+            document.querySelectorAll('.user-list-row').forEach(function(row) {
+                if (row.id !== 'usuarios-' + grupo) {
+                    row.classList.remove('expanded');
+                }
+            });
+            document.querySelectorAll('.expand-btn').forEach(function(b) {
+                if (b !== btn) b.textContent = "+";
+            });
+            // Alterna la fila de usuarios seleccionada
+            const fila = document.getElementById('usuarios-' + grupo);
+            if (fila.classList.contains('expanded')) {
+                fila.classList.remove('expanded');
+                btn.textContent = "+";
+            } else {
+                fila.classList.add('expanded');
+                btn.textContent = "−";
+            }
+        }
+    </script>
+</body>
+</html>

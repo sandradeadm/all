@@ -1,0 +1,35 @@
+/* ==== Filtros ==== */
+.container-busqueda{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 auto;
+    gap: 0.25rem;
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    background-color: #e6f2f700;
+    width: 30%;
+}
+
+.buscador{
+    flex: 1 1 50%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 2px solid #00384a;
+    font-size: 1rem;
+    color:#00384a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+.buscador::placeholder{
+    color: #00384a;
+}
+
+.filtro{
+    flex: 1 1 50%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 2px solid #00384a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}

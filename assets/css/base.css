@@ -1,0 +1,188 @@
+/* ===== Reset básico ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: 	#e6f2f7;
+  color: #002B36;
+}
+
+  /* ===== HEADER ===== */
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: #0077a6;
+    border-bottom: 1px solid #000;
+    position: relative;
+    z-index: 100;
+    height:6rem;
+    color: #fff;
+  }
+  
+  /* — Logo (izquierda) — */
+  .header-logo {
+    order: 1;                      /* primer elemento en la 1ª línea */
+    display: flex;
+    align-items: center;
+  }
+  .logo-img {
+    width: 40px;
+    margin-right: 0.5rem;
+  }
+  .logo-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  /* — Zona usuario (derecha) — */
+  .user-menu {
+    order: 2;                      /* segundo elemento en la 1ª línea */
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .user-name {
+    font-size: 0.9rem;
+    color: #fff;
+}
+
+
+  /* — Botón “☰” (solo en móvil) — */
+.menu-btn {
+    order: 3;
+    background: #fff;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: none;                /* visible solo en móvil */
+}
+
+  /* — Título centrado en su propia línea — */
+header > h1 {
+    position: absolute;    /* sale del flujo flex */
+    top: 12%;
+    left: 50%;             /* punto medio del header */
+    transform: translateX(-50%); /* lo centra exactamente */
+    margin: 0;             /* elimina márgenes verticales */
+    width: auto;           /* para que mida solo lo necesario */
+    text-align: center;    /* por si ocupa más ancho */
+    z-index: 10;           /* encima de otros elementos */
+    flex: none;
+    color: #fff;
+}
+
+
+  /* ===== NAV  ===== */
+nav {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  position: relative;
+  padding: 1rem;
+  background: #0077a6;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+nav ul {
+  list-style: none;
+  position: relative;
+}
+
+nav ul li a {
+  display: block;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: #00384a;
+  font-weight: 500;
+  border-radius: 4px;
+  color: #fff;
+}
+
+/* ===== Megamenú (solo al hover) ===== */
+.megamenu {
+  display: none;                 /* oculto por defecto */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #0077a6;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  flex-direction: row;
+  gap: 2rem;
+  white-space: nowrap;
+  z-index: 200;
+}
+
+/* muestra el megamenú al pasar el ratón por “Administración” */
+nav ul:nth-of-type(3):hover .megamenu {
+  display: flex;
+}
+
+/* muestra el megamenú al pasar el ratón por "Sistema” */
+nav ul:nth-of-type(4):hover .megamenu {
+  display: flex;
+}
+
+/* Columnas dentro del megamenú */
+.columna-menu h4 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid #333;
+  display: inline-block;
+}
+
+.columna-menu ul {
+  list-style: none;
+  margin-top: 0.5rem;
+}
+
+.columna-menu ul li + li {
+  margin-top: 0.4rem;
+}
+
+.columna-menu ul li a {
+  position: relative;
+  text-decoration: none;
+  color: #fff;
+}
+
+.columna-menu ul li a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.columna-menu ul li a:hover::after {
+  transform: scaleX(1);
+}
+
+  /* ===== Contenido principal (iframe) ===== */
+
+
+main iframe#contenido {
+  display: flex;
+  flex-direction: column;
+  height: 84vh ;
+  width: 100%;
+}
+  /* Iframe */
+iframe {
+  flex-grow: 1;
+  border: none;
+  padding: 1rem;
+  padding-top: 0px;
+}

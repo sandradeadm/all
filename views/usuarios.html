@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Usuarios</title>
+    <link rel="stylesheet" href="/assets/css/base.css">
+    <link rel="stylesheet" href="/assets/css/tablas.css">
+    <link rel="stylesheet" href="/assets/css/btn.css">
+    <style>
+        .form-usuario {
+            margin: 30px auto 20px auto;
+            padding: 20px;
+            max-width: 600px;
+            background: #f6f8fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #eee;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .form-usuario input {
+            padding: 8px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            flex: 1 1 150px;
+        }
+        .form-usuario button {
+            flex: 1 1 100px;
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 14px;
+            cursor: pointer;
+        }
+        .form-usuario button:hover {
+            background: #185abc;
+        }
+        .mensaje {
+            text-align: center;
+            margin-bottom: 10px;
+            color: green;
+        }
+        .mensaje.error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestión de Usuarios</h1>
+        <div id="mensaje" class="mensaje"></div>
+        <!-- Formulario para agregar usuario -->
+        <form class="form-usuario" id="formAgregarUsuario" autocomplete="off">
+            <input type="text" id="nombre" placeholder="Nombre" required>
+            <input type="password" id="pass" placeholder="Contraseña" required>
+            <input type="number" id="id_rol" placeholder="ID Rol" required>
+            <input type="number" id="id_grupo" placeholder="ID Grupo" required>
+            <button type="submit">Agregar Usuario</button>
+        </form>
+        <!-- Tabla de usuarios -->
+        <table id="usuariosTable" class="tabla">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Contraseña</th>
+                    <th>ID Rol</th>
+                    <th>ID Grupo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Se llenará dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+    // Función para cargar usuarios
+    function cargarUsuarios() {
+        fetch('http://localhost:3000/api/usuarios')
+            .then(res => res.json())
+            .then(usuarios => {
+                const tbody = document.querySelector('#usuariosTable tbody');
+                tbody.innerHTML = '';
+                usuarios.forEach(u => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${u.id_usuario ?? ''}</td>
+                        <td>${u.nombre ?? ''}</td>
+                        <td>${u.pass ?? ''}</td>
+                        <td>${u.id_rol ?? ''}</td>
+                        <td>${u.id_grupo ?? ''}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(error => {
+                document.getElementById('mensaje').textContent = 'Error al cargar usuarios';
+                document.getElementById('mensaje').className = 'mensaje error';
+            });
+    }
+
+    // Llamar al cargar la página
+    cargarUsuarios();
+
+    // Función para agregar usuario
+    document.getElementById('formAgregarUsuario').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre').value.trim();
+        const pass = document.getElementById('pass').value.trim();
+        const id_rol = parseInt(document.getElementById('id_rol').value, 10);
+        const id_grupo = parseInt(document.getElementById('id_grupo').value, 10);
+
+        fetch('http://localhost:3000/api/usuarios', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre, pass, id_rol, id_grupo })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success || data.id_usuario) {
+                document.getElementById('mensaje').textContent = 'Usuario agregado correctamente';
+                document.getElementById('mensaje').className = 'mensaje';
+                document.getElementById('formAgregarUsuario').reset();
+                cargarUsuarios();
+            } else {
+                throw new Error(data.error || 'No se pudo agregar el usuario');
+            }
+        })
+        .catch(error => {
+            document.getElementById('mensaje').textContent = error.message;
+            document.getElementById('mensaje').className = 'mensaje error';
+        });
+    });
+    </script>
+</body>
+</html>
