@@ -1,0 +1,542 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 17.4
+-- Dumped by pg_dump version 17.4
+
+-- Started on 2025-06-05 16:17:40
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 228 (class 1255 OID 16508)
+-- Name: guardar_pass_hist(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.guardar_pass_hist() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  -- Solo guarda la contraseña si realmente cambió
+  IF NEW.pass IS DISTINCT FROM OLD.pass THEN
+    INSERT INTO pass_historica (id_usuario, pass_ult, fecha_cambio)
+    VALUES (OLD.id_usuario, OLD.pass, NOW());
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.guardar_pass_hist() OWNER TO postgres;
+
+--
+-- TOC entry 229 (class 1255 OID 16510)
+-- Name: log_cambio_contrasena(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.log_cambio_contrasena() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  -- Solo registra si cambia la contraseña
+  IF NEW.pass IS DISTINCT FROM OLD.pass THEN
+    INSERT INTO logs (id_operacion, hora_y_fecha, id_usuario, mac)
+    VALUES (
+      1, -- Cambia este número por el id_operacion correspondiente a "cambio de contraseña"
+      NOW(),
+      OLD.id_usuario,
+      NULL -- O puedes poner la MAC si la tienes disponible de algún modo
+    );
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.log_cambio_contrasena() OWNER TO postgres;
+
+--
+-- TOC entry 231 (class 1255 OID 16522)
+-- Name: registrar_log_cambios(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.registrar_log_cambios() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    operacion_id integer;
+    usuario_id integer;
+BEGIN
+    -- Determina el tipo de operación
+    IF TG_OP = 'INSERT' THEN
+        operacion_id := 1; -- Inserción
+        usuario_id := NEW.id_usuario; -- Ajusta según tu estructura
+    ELSIF TG_OP = 'UPDATE' THEN
+        operacion_id := 2; -- Actualización
+        usuario_id := NEW.id_usuario;
+    ELSIF TG_OP = 'DELETE' THEN
+        operacion_id := 3; -- Borrado
+        usuario_id := OLD.id_usuario;
+    END IF;
+
+    -- Inserta el registro en logs
+    INSERT INTO logs (id_operacion, hora_y_fecha, id_usuario, mac)
+    VALUES (
+        operacion_id,
+        NOW(),
+        usuario_id,
+        NULL -- O aquí puedes poner el valor de MAC si lo tienes
+    );
+
+    RETURN NULL; -- Para triggers AFTER
+END;
+$$;
+
+
+ALTER FUNCTION public.registrar_log_cambios() OWNER TO postgres;
+
+--
+-- TOC entry 230 (class 1255 OID 16520)
+-- Name: registrar_log_operacion(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.registrar_log_operacion() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    operacion_id integer;
+BEGIN
+    -- Determinar el tipo de operación y asignar el id_operacion correspondiente
+    IF TG_OP = 'INSERT' THEN
+        operacion_id := 1; -- Por ejemplo, 1 = INSERT
+    ELSIF TG_OP = 'UPDATE' THEN
+        operacion_id := 2; -- Por ejemplo, 2 = UPDATE
+    ELSIF TG_OP = 'DELETE' THEN
+        operacion_id := 3; -- Por ejemplo, 3 = DELETE
+    END IF;
+
+    -- Insertar en logs (ajusta los campos según tu modelo)
+    INSERT INTO logs (id_operacion, hora_y_fecha, id_usuario, mac)
+    VALUES (
+        operacion_id,
+        NOW(),
+        -- Aquí debes poner la lógica para capturar el usuario (ver nota abajo)
+        NULL, -- ejemplo: NEW.id_usuario o una función que retorne el usuario actual
+        NULL  -- ejemplo: valor para MAC si lo tienes disponible
+    );
+
+    RETURN NULL;
+END;
+$$;
+
+
+ALTER FUNCTION public.registrar_log_operacion() OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 220 (class 1259 OID 16402)
+-- Name: grupos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.grupos (
+    id_grupo integer NOT NULL,
+    nombre character varying(30)
+);
+
+
+ALTER TABLE public.grupos OWNER TO postgres;
+
+--
+-- TOC entry 224 (class 1259 OID 16494)
+-- Name: grupos_id_grupo_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.grupos ALTER COLUMN id_grupo ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.grupos_id_grupo_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 218 (class 1259 OID 16392)
+-- Name: logs; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.logs (
+    id_log integer NOT NULL,
+    id_operacion integer,
+    hora_y_fecha timestamp without time zone,
+    id_usuario integer,
+    mac integer
+);
+
+
+ALTER TABLE public.logs OWNER TO postgres;
+
+--
+-- TOC entry 226 (class 1259 OID 16512)
+-- Name: logs_id_log_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.logs ALTER COLUMN id_log ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.logs_id_log_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 219 (class 1259 OID 16397)
+-- Name: operaciones; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.operaciones (
+    id_operacion integer NOT NULL,
+    descripcion character varying(30)
+);
+
+
+ALTER TABLE public.operaciones OWNER TO postgres;
+
+--
+-- TOC entry 227 (class 1259 OID 16513)
+-- Name: operaciones_id_operacion_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.operaciones ALTER COLUMN id_operacion ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.operaciones_id_operacion_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 222 (class 1259 OID 16412)
+-- Name: pass_historica; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.pass_historica (
+    id_usuario integer NOT NULL,
+    pass_ult character varying(15),
+    fecha_cambio timestamp without time zone
+);
+
+
+ALTER TABLE public.pass_historica OWNER TO postgres;
+
+--
+-- TOC entry 221 (class 1259 OID 16407)
+-- Name: roles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.roles (
+    id_rol integer NOT NULL,
+    nombre character varying(20),
+    descripcion text
+);
+
+
+ALTER TABLE public.roles OWNER TO postgres;
+
+--
+-- TOC entry 223 (class 1259 OID 16493)
+-- Name: roles_id_rol_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.roles ALTER COLUMN id_rol ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.roles_id_rol_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 217 (class 1259 OID 16387)
+-- Name: usuarios; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.usuarios (
+    id_usuario integer NOT NULL,
+    nombre character varying(15),
+    pass character varying(15),
+    id_rol integer NOT NULL,
+    id_grupo integer NOT NULL,
+    dni character varying(8)
+);
+
+
+ALTER TABLE public.usuarios OWNER TO postgres;
+
+--
+-- TOC entry 225 (class 1259 OID 16495)
+-- Name: usuarios_id_usuario_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.usuarios ALTER COLUMN id_usuario ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.usuarios_id_usuario_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 4935 (class 0 OID 16402)
+-- Dependencies: 220
+-- Data for Name: grupos; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.grupos (id_grupo, nombre) FROM stdin;
+6	Administración
+7	Profesores
+8	Alumnos
+9	Secretaría
+\.
+
+
+--
+-- TOC entry 4933 (class 0 OID 16392)
+-- Dependencies: 218
+-- Data for Name: logs; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.logs (id_log, id_operacion, hora_y_fecha, id_usuario, mac) FROM stdin;
+\.
+
+
+--
+-- TOC entry 4934 (class 0 OID 16397)
+-- Dependencies: 219
+-- Data for Name: operaciones; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.operaciones (id_operacion, descripcion) FROM stdin;
+1	INSERT
+2	UPDATE
+3	DELETE
+\.
+
+
+--
+-- TOC entry 4937 (class 0 OID 16412)
+-- Dependencies: 222
+-- Data for Name: pass_historica; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.pass_historica (id_usuario, pass_ult, fecha_cambio) FROM stdin;
+\.
+
+
+--
+-- TOC entry 4936 (class 0 OID 16407)
+-- Dependencies: 221
+-- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.roles (id_rol, nombre, descripcion) FROM stdin;
+1	Administrador	Acceso total al sistema. Puede crear, modificar y eliminar usuarios, roles y configuraciones globales.
+2	Supervisor	Supervisa la actividad de usuarios y puede generar reportes, pero no puede modificar configuraciones.
+3	Operador	Realiza tareas operativas diarias (altas, bajas, modificaciones de datos principales).
+4	Usuario	Acceso básico, puede consultar y modificar solo su propia información personal.
+5	Invitado	Acceso muy limitado, solo puede visualizar información pública o restringida.
+6	Auditor	Puede revisar logs y operaciones realizadas, pero no modificar datos.
+7	Soporte	Atiende consultas y problemas de los usuarios, puede ver información relevante pero no modificar.
+\.
+
+
+--
+-- TOC entry 4932 (class 0 OID 16387)
+-- Dependencies: 217
+-- Data for Name: usuarios; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.usuarios (id_usuario, nombre, pass, id_rol, id_grupo, dni) FROM stdin;
+2	sandradeadm	asdf123	5	7	48708268
+3	santiagoan	pvbkg5	5	6	87654987
+4	skajff	aksjfj	7	7	8473827
+5	snati	374hjh	7	7	73647634
+6	skajfji	u3y4bfj	7	7	76372678
+7	sjfhja	281738jr	7	7	37481978
+8	segur	3874jhf	2	6	12874874
+\.
+
+
+--
+-- TOC entry 4948 (class 0 OID 0)
+-- Dependencies: 224
+-- Name: grupos_id_grupo_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.grupos_id_grupo_seq', 9, true);
+
+
+--
+-- TOC entry 4949 (class 0 OID 0)
+-- Dependencies: 226
+-- Name: logs_id_log_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.logs_id_log_seq', 3, true);
+
+
+--
+-- TOC entry 4950 (class 0 OID 0)
+-- Dependencies: 227
+-- Name: operaciones_id_operacion_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.operaciones_id_operacion_seq', 1, true);
+
+
+--
+-- TOC entry 4951 (class 0 OID 0)
+-- Dependencies: 223
+-- Name: roles_id_rol_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.roles_id_rol_seq', 8, true);
+
+
+--
+-- TOC entry 4952 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: usuarios_id_usuario_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.usuarios_id_usuario_seq', 8, true);
+
+
+--
+-- TOC entry 4777 (class 2606 OID 16406)
+-- Name: grupos grupos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.grupos
+    ADD CONSTRAINT grupos_pkey PRIMARY KEY (id_grupo);
+
+
+--
+-- TOC entry 4773 (class 2606 OID 16396)
+-- Name: logs logs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.logs
+    ADD CONSTRAINT logs_pkey PRIMARY KEY (id_log);
+
+
+--
+-- TOC entry 4775 (class 2606 OID 16401)
+-- Name: operaciones operaciones_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.operaciones
+    ADD CONSTRAINT operaciones_pkey PRIMARY KEY (id_operacion);
+
+
+--
+-- TOC entry 4781 (class 2606 OID 16416)
+-- Name: pass_historica pass_historica_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pass_historica
+    ADD CONSTRAINT pass_historica_pkey PRIMARY KEY (id_usuario);
+
+
+--
+-- TOC entry 4779 (class 2606 OID 16411)
+-- Name: roles roles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.roles
+    ADD CONSTRAINT roles_pkey PRIMARY KEY (id_rol);
+
+
+--
+-- TOC entry 4771 (class 2606 OID 16391)
+-- Name: usuarios usuarios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuarios
+    ADD CONSTRAINT usuarios_pkey PRIMARY KEY (id_usuario);
+
+
+--
+-- TOC entry 4784 (class 2606 OID 16427)
+-- Name: logs fk_logs_operaciones; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.logs
+    ADD CONSTRAINT fk_logs_operaciones FOREIGN KEY (id_operacion) REFERENCES public.operaciones(id_operacion);
+
+
+--
+-- TOC entry 4785 (class 2606 OID 16432)
+-- Name: logs fk_logs_usuarios; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.logs
+    ADD CONSTRAINT fk_logs_usuarios FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario);
+
+
+--
+-- TOC entry 4786 (class 2606 OID 16496)
+-- Name: pass_historica fk_pass_usuario; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pass_historica
+    ADD CONSTRAINT fk_pass_usuario FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario);
+
+
+--
+-- TOC entry 4782 (class 2606 OID 16442)
+-- Name: usuarios fk_usuarios_grupos; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuarios
+    ADD CONSTRAINT fk_usuarios_grupos FOREIGN KEY (id_grupo) REFERENCES public.grupos(id_grupo);
+
+
+--
+-- TOC entry 4783 (class 2606 OID 16437)
+-- Name: usuarios fk_usuarios_roles; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuarios
+    ADD CONSTRAINT fk_usuarios_roles FOREIGN KEY (id_rol) REFERENCES public.roles(id_rol);
+
+
+-- Completed on 2025-06-05 16:17:42
+
+--
+-- PostgreSQL database dump complete
+--
+
