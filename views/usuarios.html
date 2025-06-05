@@ -8,34 +8,78 @@
     <link rel="stylesheet" href="/assets/css/tablas.css">
     <link rel="stylesheet" href="/assets/css/btn.css">
     <style>
-        .form-usuario {
-            margin: 30px auto 20px auto;
-            padding: 20px;
-            max-width: 600px;
-            background: #f6f8fa;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px #eee;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+        .user-form-card {
+          background: #fff;
+          border-radius: 20px;
+          max-width: 470px;
+          margin: 32px auto 38px auto;
+          padding: 36px 32px 26px 32px;
+          box-shadow: 0 3px 24px #1976d218, 0 1px 4px #1565c022;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
-        .form-usuario input {
-            padding: 8px;
-            border: 1px solid #bbb;
-            border-radius: 5px;
-            flex: 1 1 150px;
+        .user-form-card h2 {
+          color: #1565c0;
+          font-size: 1.3em;
+          margin-bottom: 24px;
+          font-weight: 700;
+          letter-spacing: 1px;
         }
-        .form-usuario button {
-            flex: 1 1 100px;
-            background: #1a73e8;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 8px 14px;
-            cursor: pointer;
+        .user-form-row {
+          display: flex;
+          gap: 15px;
+          width: 100%;
+          margin-bottom: 17px;
+          justify-content: center;
         }
-        .form-usuario button:hover {
-            background: #185abc;
+        .user-form-row:last-child { margin-bottom: 0; }
+        .user-form-card input,
+        .user-form-card select {
+          background: #f1f6fa;
+          border: none;
+          border-radius: 18px;
+          padding: 13px 18px;
+          font-size: 1em;
+          box-shadow: 0 1.5px 6px #1565c012;
+          outline: none;
+          transition: box-shadow 0.18s, border 0.18s;
+          flex: 1 1 0px;
+        }
+        .user-form-card input:focus,
+        .user-form-card select:focus {
+          box-shadow: 0 0 0 2px #1976d2aa;
+          background: #e3f2fd;
+        }
+        .user-form-card select {
+          color: #1565c0;
+          min-width: 120px;
+        }
+        .user-form-card button {
+          background: linear-gradient(90deg, #1976d2 70%, #42a5f5 100%);
+          color: #fff;
+          border: none;
+          border-radius: 18px;
+          padding: 13px 34px;
+          font-size: 1.05em;
+          font-weight: 600;
+          letter-spacing: 0.5px;
+          box-shadow: 0 1.5px 8px #1565c022;
+          margin-left: 14px;
+          cursor: pointer;
+          transition: background 0.17s, transform 0.16s;
+        }
+        .user-form-card button:hover {
+          background: linear-gradient(90deg, #1565c0 70%, #1976d2 100%);
+          transform: scale(1.04);
+        }
+        @media (max-width: 600px) {
+          .user-form-card {
+            padding: 16px 7vw 16px 7vw;
+            max-width: 97vw;
+          }
+          .user-form-row { flex-direction: column; gap: 8px; }
+          .user-form-card button { margin-left: 0; width: 100%; }
         }
         .mensaje {
             text-align: center;
@@ -51,14 +95,30 @@
     <div class="container">
         <h1>Gestión de Usuarios</h1>
         <div id="mensaje" class="mensaje"></div>
-        <!-- Formulario para agregar usuario -->
-        <form class="form-usuario" id="formAgregarUsuario" autocomplete="off">
-            <input type="text" id="nombre" placeholder="Nombre" required>
-            <input type="password" id="pass" placeholder="Contraseña" required>
-            <input type="number" id="id_rol" placeholder="ID Rol" required>
-            <input type="number" id="id_grupo" placeholder="ID Grupo" required>
-            <button type="submit">Agregar Usuario</button>
-        </form>
+        <!-- FORMULARIO MODERNO -->
+        <div class="user-form-card">
+          <h2>Agregar Usuario</h2>
+          <form id="formAgregarUsuario" autocomplete="off">
+            <div class="user-form-row">
+              <input type="text" id="nombre" placeholder="Nombre" required>
+              <input type="password" id="pass" placeholder="Contraseña" required>
+            </div>
+            <div class="user-form-row">
+              <input type="text" id="dni" placeholder="DNI" required>
+              <select id="id_rol" required>
+                <option value="">Seleccionar rol...</option>
+              </select>
+            </div>
+            <div class="user-form-row">
+              <select id="id_grupo" required>
+                <option value="">Seleccionar grupo...</option>
+              </select>
+              <button type="submit">Agregar Usuario</button>
+            </div>
+          </form>
+        </div>
+        <!-- FIN FORMULARIO MODERNO -->
+
         <!-- Tabla de usuarios -->
         <table id="usuariosTable" class="tabla">
             <thead>
@@ -66,6 +126,7 @@
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Contraseña</th>
+                    <th>DNI</th>
                     <th>ID Rol</th>
                     <th>ID Grupo</th>
                 </tr>
@@ -76,6 +137,46 @@
         </table>
     </div>
     <script>
+    // Cargar roles dinámicamente
+    function cargarRoles() {
+        fetch('http://localhost:3000/api/roles')
+        .then(res => res.json())
+        .then(roles => {
+            const select = document.getElementById('id_rol');
+            select.innerHTML = '<option value="">Seleccionar rol...</option>';
+            roles.forEach(r => {
+                const option = document.createElement('option');
+                option.value = r.id_rol;
+                option.textContent = r.nombre || `Rol ${r.id_rol}`;
+                select.appendChild(option);
+            });
+        }).catch(() => {
+            // fallback si error
+            const select = document.getElementById('id_rol');
+            select.innerHTML = '<option value="">Seleccionar rol...</option>';
+        });
+    }
+
+    // Cargar grupos dinámicamente
+    function cargarGrupos() {
+        fetch('http://localhost:3000/api/grupos')
+        .then(res => res.json())
+        .then(grupos => {
+            const select = document.getElementById('id_grupo');
+            select.innerHTML = '<option value="">Seleccionar grupo...</option>';
+            grupos.forEach(g => {
+                const option = document.createElement('option');
+                option.value = g.id_grupo;
+                option.textContent = g.nombre || `Grupo ${g.id_grupo}`;
+                select.appendChild(option);
+            });
+        }).catch(() => {
+            // fallback si error
+            const select = document.getElementById('id_grupo');
+            select.innerHTML = '<option value="">Seleccionar grupo...</option>';
+        });
+    }
+
     // Función para cargar usuarios
     function cargarUsuarios() {
         fetch('http://localhost:3000/api/usuarios')
@@ -89,6 +190,7 @@
                         <td>${u.id_usuario ?? ''}</td>
                         <td>${u.nombre ?? ''}</td>
                         <td>${u.pass ?? ''}</td>
+                        <td>${u.dni ?? ''}</td>
                         <td>${u.id_rol ?? ''}</td>
                         <td>${u.id_grupo ?? ''}</td>
                     `;
@@ -103,19 +205,22 @@
 
     // Llamar al cargar la página
     cargarUsuarios();
+    cargarRoles();
+    cargarGrupos();
 
     // Función para agregar usuario
     document.getElementById('formAgregarUsuario').addEventListener('submit', function(e) {
         e.preventDefault();
         const nombre = document.getElementById('nombre').value.trim();
         const pass = document.getElementById('pass').value.trim();
+        const dni = document.getElementById('dni').value.trim();
         const id_rol = parseInt(document.getElementById('id_rol').value, 10);
         const id_grupo = parseInt(document.getElementById('id_grupo').value, 10);
 
         fetch('http://localhost:3000/api/usuarios', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre, pass, id_rol, id_grupo })
+            body: JSON.stringify({ nombre, pass, id_rol, id_grupo, dni })
         })
         .then(res => res.json())
         .then(data => {

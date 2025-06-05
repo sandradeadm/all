@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const tbody = document.querySelector("#alumnosTable tbody");
+    const tbody = document.querySelector("#tabla-alumnos tbody");
 
     fetch("/alumnos")
         .then(res => res.json())
@@ -14,9 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     <td>${alumno.Legajo}</td>
                     <td></td>
                     <td>
-                        <button class="ver-mas" onclick="mostrarModal()">Ver Mas</button>
-                        <button class="editar" onclick="mostrarModal()">Editar</button>
-                        <button class="baja" onclick="mostrarModal()">Baja</button> 
+                        <button onclick="mostrarModal(document.getElementById('modalAlumno'))">Detalles</button>
+                        <button onclick="mostrarModal(document.getElementById('modalTutores'))">Ver Tutores</button>
                     </td>
                 `
 

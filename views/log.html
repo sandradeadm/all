@@ -1,1 +1,195 @@
-<p>esto es un log</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bitácora del Sistema</title>
+  <link rel="stylesheet" href="/assets/css/tablas.css">
+  <style>
+    body {
+      background: #f7fafd;
+      color: #23272e;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .bitacora-header {
+      background: #eaf1fb;
+      padding: 1.5em 2em 1em 2em;
+      border-bottom: 1px solid #d7e5f5;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .bitacora-title {
+      font-size: 1.7em;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: #2874c4;
+      margin: 0;
+    }
+    .bitacora-summary {
+      font-size: 1em;
+      color: #5683a4;
+      display: flex;
+      gap: 2em;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .bitacora-summary span {
+      background: #f4f7fb;
+      padding: 0.5em 1.1em;
+      border-radius: 18px;
+      font-size: 1em;
+      color: #2874c4;
+      box-shadow: 0 1px 4px #0001;
+    }
+    .bitacora-filtros {
+      background: #fff;
+      padding: 1em 2em;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      align-items: center;
+      border-bottom: 1px solid #e1e7f0;
+    }
+    .bitacora-filtros input, .bitacora-filtros select {
+      padding: 7px 12px;
+      border: 1px solid #b0c9e3;
+      background: #f6fafd;
+      color: #273248;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+    .bitacora-filtros input:focus, .bitacora-filtros select:focus {
+      border-color: #2874c4;
+      outline: none;
+    }
+    .bitacora-filtros button {
+      background: #2874c4;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 22px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .bitacora-filtros button:hover {
+      background: #16508f;
+    }
+    .log-console {
+      background: #fff;
+      margin: 2em auto;
+      padding: 2em 1.5em;
+      border-radius: 14px;
+      box-shadow: 0 2px 18px #c4d5e933;
+      max-width: 98vw;
+      width: 1600px;
+      min-height: 60vh;
+      font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+      font-size: 1em;
+      color: #23272e;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .log-index    { color: #0076d7; }
+    .log-user     { color: #2b91af; }
+    .log-date     { color: #228b22; }
+    .log-ip       { color: #6b4cc9; }
+    .log-detail   { color: #23272e; }
+    @media (max-width: 1700px) {
+      .log-console { width: 98vw; }
+    }
+    @media (max-width: 950px) {
+      .log-console { font-size: 0.92em; width: 100vw; }
+    }
+    @media (max-width: 700px) {
+      .bitacora-header,
+      .bitacora-filtros,
+      .log-console { padding: 1em; }
+      .log-console { font-size: 0.88em; }
+    }
+    @media (max-width: 500px) {
+      .bitacora-header,
+      .bitacora-filtros,
+      .log-console { padding: 0.4em; }
+      .log-console { font-size: 0.8em; }
+      .bitacora-summary { flex-direction: column; gap: 0.5em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bitacora-header">
+    <div class="bitacora-title">Bitácora de Actividad</div>
+    <div class="bitacora-summary">
+      <span>Registros: <b>257</b></span>
+      <span>Usuario actual: <b>sandradeadm</b></span>
+      <span>Última acción: <b>hace 3 min</b></span>
+    </div>
+  </div>
+  <form class="bitacora-filtros" onsubmit="filtrarBitacora(event)">
+    <input type="text" id="buscarUsuario" placeholder="Usuario" />
+    <input type="date" id="buscarFecha" />
+    <input type="text" id="buscarDetalle" placeholder="Detalle o IP" />
+    <button type="submit">Filtrar</button>
+  </form>
+  <div class="log-console" id="logConsole">
+<span class="log-index">4971</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:25:35</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">peer info: IV_NCP=2</span>
+<span class="log-index">4972</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:25:35</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">peer info: IV_CIPHERS=AES-256-GCM:AES-128-GCM:CHACHA20-POLY1305:AES-256-CBC:AES-128-CBC</span>
+<span class="log-index">4973</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:25:35</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">peer info: IV_PROTO=999</span>
+<span class="log-index">4974</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:25:35</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">peer info: IV_LZO_STUB=1</span>
+<span class="log-index">4975</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:25:35</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">peer info: IV_COMP_STUB=1</span>
+<span class="log-index">4976</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:25:35</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">peer info: IV_COMP_STUBv2=1</span>
+<span class="log-index">4977</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:25:35</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">peer info: IV_HWADDR=0c:5c:ba:b7:95:cf:ba</span>
+<span class="log-index">4978</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:25:35</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">peer info: IV_SSL=OpenSSL_3_3_1 4 Jun 2024</span>
+<span class="log-index">4979</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:25:35</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">peer info: IV_PLAT_VER=18.0_a_msd64_executable</span>
+<span class="log-index">4980</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:25:35</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">peer info: IV_UUID=1b3a344bb4dcbc4d8ca8dec4f0a819f5</span>
+<span class="log-index">4981</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:25:35</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">peer info: IV_NAW=relatively-aws-3188</span>
+<span class="log-index">4982</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:25:35</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">peer info: IV_TCPNL=1</span>
+<span class="log-index">4983</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">[G7217b3e5c4bc94b7] Peer Connection Initiated with [AF_INET6]:::ffff:190.220.155.10:64645</span>
+<span class="log-index">4984</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:64645</span>  <span class="log-detail">Connection reset, restarting [0]</span>
+<span class="log-index">4985</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">TCP connection established with [AF_INET6]:::ffff:190.220.155.10:62484</span>
+<span class="log-index">4986</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">peer info: IV_VER=2.6.12</span>
+<span class="log-index">4987</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">peer info: IV_PLAT=linux</span>
+<span class="log-index">4988</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">peer info: IV_TCPNL=1</span>
+<span class="log-index">4989</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">Connection reset, restarting [0]</span>
+<span class="log-index">4990</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">TCP connection established with [AF_INET6]:::ffff:190.220.155.10:62484</span>
+<span class="log-index">4991</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">peer info: IV_VER=2.6.12</span>
+<span class="log-index">4992</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">peer info: IV_PLAT=linux</span>
+<span class="log-index">4993</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">peer info: IV_TCPNL=1</span>
+<span class="log-index">4994</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">Connection reset, restarting [0]</span>
+<span class="log-index">4995</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">TCP connection established with [AF_INET6]:::ffff:190.220.155.10:62484</span>
+<span class="log-index">4996</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">peer info: IV_VER=2.6.12</span>
+<span class="log-index">4997</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">peer info: IV_PLAT=linux</span>
+<span class="log-index">4998</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">peer info: IV_TCPNL=1</span>
+<span class="log-index">4999</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">Connection reset, restarting [0]</span>
+<span class="log-index">5000</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">TCP connection established with [AF_INET6]:::ffff:190.220.155.10:62484</span>
+<span class="log-index">5001</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">peer info: IV_VER=2.6.12</span>
+<span class="log-index">5002</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">peer info: IV_PLAT=linux</span>
+<span class="log-index">5003</span>  <span class="log-user">[calm-dreams-1794]</span>  <span class="log-date">2025-05-20 13:45:45</span>  <span class="log-ip">190.220.155.10:62484</span>  <span class="log-detail">peer info: IV_TCPNL=1</span>
+  </div>
+  <script>
+    function filtrarBitacora(event) {
+      event.preventDefault();
+      let usuario = document.getElementById('buscarUsuario').value.toLowerCase();
+      let fecha = document.getElementById('buscarFecha').value;
+      let detalle = document.getElementById('buscarDetalle').value.toLowerCase();
+      let logs = document.querySelectorAll("#logConsole > span.log-index");
+      logs.forEach(idxSpan => {
+        let logLine = idxSpan.parentElement;
+        const user = logLine.querySelector('.log-user').textContent.toLowerCase();
+        const date = logLine.querySelector('.log-date').textContent;
+        const detail = logLine.querySelector('.log-detail').textContent.toLowerCase();
+        const ip = logLine.querySelector('.log-ip').textContent.toLowerCase();
+        let show = true;
+        if(usuario && !user.includes(usuario)) show = false;
+        if(fecha && !date.startsWith(fecha)) show = false;
+        if(detalle && !(detail.includes(detalle) || ip.includes(detalle))) show = false;
+        logLine.style.display = show ? "" : "none";
+      });
+    }
+  </script>
+</body>
+</html>

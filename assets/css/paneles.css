@@ -1,0 +1,44 @@
+.panel-tabla-container {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 2rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.tabla-wrapper {
+  flex: 1 1 400px;
+  max-width: 500px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 1rem;
+}
+
+.tabla-wrapper h3 {
+  text-align: center;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #00384a;
+}
+
+.tabla-panel {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+}
+
+.tabla-panel tr {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.tabla-panel tr:hover {
+  background-color: #e0f4ff;
+}
+
+.tabla-panel td {
+  padding: 1rem;
+  border-bottom: 1px solid #ccc;
+}

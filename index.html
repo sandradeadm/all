@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | ABM Alumnos</title>
+    <title>Home | Administración del Sistema</title>
     <link rel="icon" href="/assets/img/Logo.png" type="image/png">
     <link rel="stylesheet" href="/assets/css/base.css">
     <link rel="stylesheet" href="/assets/css/matriz.css">
@@ -23,7 +23,7 @@
             </div>
         </div>
         <!--  Nav  -->
-        <h1>Administación</h1>
+         <h1>Sistema de Administación de Alumnos</h1>
         <button id="menu-toggle" class="menu-btn">☰</button>
         
         <!-- Usuario derecha -->
@@ -35,32 +35,32 @@
 
     <!--  Nav  -->
     <nav>
-        <ul>
+       <ul>
             <li><a href="#" onclick="cargarVista('bienvenida.html')">Inicio</a></li>
         </ul>
         <ul>
-            <li><a href="#" onclick="cargarVista('alumnos.html')">Alumnos</a></li>
+            <li><a href="#" onclick="cargarVista('menu-alumnos.html')">Oficina de Alumnos</a></li>
         </ul>
         <ul>
-            <li><a href="#">Administración</a></li>
+            <li><a href="#">Gestión cursos</a></li>
             <div class="megamenu">
                 <div class="columna-menu">
                     <ul>
                         <li><a href="#" onclick="cargarVista('cursos.html')">Cursos</a></li>
-                        <li><a href="#" onclick="cargarVista('materias.html')">Materias</a></li>
-                        <li><a href="#" onclick="cargarVista('planes.html')">Planes de estudio</a></li>
-                        <li><a href="#" onclick="cargarVista('tutores.html')">Tutores</a></li>
+                        <li><a href="#" onclick="cargarVista('materiasPlanes.html')">Materias</a></li>
                     </ul>
                 </div>
             </div>
         </ul>
         <ul>
-            <li><a href="#">Administración del sistema</a></li>
+            <li><a href="#">Administración del usuarios</a></li>
             <div class="megamenu">
                 <div class="columna-menu">
                     <ul>
                         <li><a href="#" onclick="cargarVista('usuarios.html')">Usuarios</a></li>
                         <li><a href="#" onclick="cargarVista('roles.html')">Roles</a></li>
+                        <li><a href="#" onclick="cargarVista('grupos.html')">Grupos</a></li>
+                        
                         <li class="nav-item"><a href="#" onclick="cargarVista('log.html')">Bitacora</a></li>
                     </ul>
                 </div>
@@ -68,12 +68,29 @@
         </ul>
     </nav>
 
-    
-
     <main>
         <iframe class="frame" id="contenido" src="views/bienvenida.html" frameborder="0"></iframe>
     </main>
+<footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Escuela Técnica N°4 Prof. Ricardo A. Lopez</h4>
+                <p>Sistema de gestión escolar</p>
+            </div>
 
+            <div class="footer-section">
+                <h4>Ubicación</h4>
+                <p>Calle 111 N° xxxx, Berazategui</p>
+                <p>Tel: xx-xxxx-xxxx</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Desarrollado por</h4>
+                <p>Nuestros nombres</p>
+                <p>&copy; 2025</p>
+            </div>
+        </div>
+    </footer>
     <script src="assets/js/ui.js"></script>
 </body>
 </html>

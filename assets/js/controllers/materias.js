@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const tbody = document.querySelector("#materiasTable tbody");
+    const tbody = document.querySelector("#tabla-materias tbody");
 
     fetch("/materias")
         .then(res => res.json())

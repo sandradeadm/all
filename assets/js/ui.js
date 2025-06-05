@@ -14,8 +14,22 @@ function togglePassword() {
 }
 
 function cargarVista(pagina) {
-    document.getElementById("contenido").src = `views/${pagina}`;
+  const iframe = document.getElementById("contenido");
+
+  // Si ya tiene clase de animación, la quitamos
+  iframe.classList.remove("fade");
+  iframe.classList.add("fade-out");
+
+  // Esperamos que termine el fade-out
+  setTimeout(() => {
+    iframe.src = `views/${pagina}`;
+    iframe.classList.remove("fade-out");
+    
+    // Volvemos a hacer el fade-in
+    iframe.classList.add("fade");
+  }, 200); // debe coincidir con la duración de fadeOut en CSS
 }
+
 
 
 document.getElementById("menu-toggle").addEventListener("DOMContentLoaded", function () {
@@ -29,3 +43,13 @@ const nav = document.querySelector('header nav');
 btn.addEventListener('click', () => {
     nav.classList.toggle('show');
 });
+
+const iframe = document.getElementById("contenido");
+
+iframe.addEventListener("load", () => {
+    iframe.classList.remove("fade");
+
+    void iframe.offsetWidth;
+
+    iframe.classList.add("fade")
+})

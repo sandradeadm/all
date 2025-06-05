@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const tbody = document.querySelector("#materiasTable tbody");
+    const tbody = document.querySelector("#tabla-cursos tbody");
 
-    fetch("/materias")
+    fetch("/cursos")
         .then(res => res.json())
         .then(data => {
             data.forEach(curso => {

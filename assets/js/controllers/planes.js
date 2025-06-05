@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const tbody = document.querySelector("#materiasTable tbody");
+    const tbody = document.querySelector("#tabla-planes tbody");
 
-    fetch("/materias")
+    fetch("/planes")
         .then(res => res.json())
         .then(data => {
             data.forEach(plan => {

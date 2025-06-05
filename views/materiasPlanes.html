@@ -1,0 +1,113 @@
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/matriz.css">
+<link rel="stylesheet" href="/assets/css/modal.css">
+<link rel="stylesheet" href="/assets/css/btn.css">
+<link rel="stylesheet" href="/assets/css/tablas.css">
+<link rel="stylesheet" href="../assets/css/paneles.css">
+
+<!-- views/panel-alumnos-tabla.html -->
+<section class="panel-tabla-container">
+
+    <!-- Tabla de acciones de materias -->
+    <div class="tabla-wrapper">
+        <h3>Materias</h3>
+        <table class="tabla-panel">
+            <tbody>
+                <tr onclick="mostrarModal(document.getElementById('modalCrearMateria'))">
+                    <td>Crear Materias</td>
+                </tr>
+                <tr onclick="mostrarModal(document.getElementById('modalModificarMateria'))">
+                    <td>Modificar Materias</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tabla de acciones de planes de estudio -->
+    <div class="tabla-wrapper">
+        <h3>Planes de estudio</h3>
+        <table class="tabla-panel">
+            <tbody>
+                <tr onclick="mostrarModal(document.getElementById('modalCrearPlan'))">
+                    <td>Crear Plan de estudio</td>
+                </tr>
+                <tr onclick="mostrarModal(document.getElementById('modalModificarPlan'))">
+                    <td>Modificar Plan de estudio</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<div class="container-busqueda">
+  <select class="filtro selector-tabla" id="selector-tabla" onchange="cambiarTabla()">
+    <option value="materias">Materias</option>
+    <option value="planes">Planes</option>
+  </select>
+
+
+  <div class="buscador-container">
+    <input class="buscador" type="text" id="searchInput" placeholder="Buscar" />
+  </div>
+</div>
+
+<!--  Tabla cursos  -->
+<table id="tabla-cursos" class="tabla">
+    <thead>
+        <tr>
+        <th>Id Curso</th>
+        <th>Curso</th>
+        <th>Plan</th>
+        <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!--  Se rellena la tabla desde la DB  -->
+    </tbody>
+</table>
+
+<!--  Tabla materias  -->
+<table id="tabla-materias" class="tabla" style="display: none;">
+    <thead>
+        <tr>
+        <th>Nombre</th>
+        <th>Id</th>
+        <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!--  Se rellena la tabla desde la DB  -->
+    </tbody>
+</table>
+
+<!--  Tabla planes de esturio  -->
+<table id="tabla-planes" class="tabla" style="display: none;">
+    <thead>
+        <tr>
+        <th>Id</th>
+        <th>INombre/th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!--  Se rellena la tabla desde la DB  -->
+    </tbody>
+</table>
+
+<script src="/assets/js/ui.js"></script>
+<script src="/assets/js/modal.js"></script>
+<script src="/assets/js/filtros.js"></script>
+<script src="/assets/js/matriz.js"></script>
+
+<!--  Cursos desde la DB  -->
+<script src="/assets/js/controllers/cursos.js"></script>
+
+<!--  Materias desde la DB  -->
+<script src="/assets/js/controllers/materias.js"></script>
+
+<!--  Planes desde la DB  -->
+<script src="/assets/js/controllers/planes.js"></script>
+
+<!-- Controlador del panel -->
+<script src="../assets/js/controllers/panelAdminEscuela.js"></script>

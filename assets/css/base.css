@@ -3,7 +3,38 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+@keyframes fadeIn{
+  from{
+    opacity: 0;
+    transform: scale(0.98);
   }
+  to{
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut{
+  from{
+    opacity: 1;
+    transform: scale(1);
+  }
+  to{
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+.fade{
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.fade-out{
+  animation: fadeOut 0.4s ease forwards;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   background: 	#e6f2f7;
@@ -17,7 +48,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 1rem;
-    background: #0077a6;
+    background: #005aa3;
     border-bottom: 1px solid #000;
     position: relative;
     z-index: 100;
@@ -66,7 +97,7 @@ body {
   /* — Título centrado en su propia línea — */
 header > h1 {
     position: absolute;    /* sale del flujo flex */
-    top: 12%;
+    top: 32%;
     left: 50%;             /* punto medio del header */
     transform: translateX(-50%); /* lo centra exactamente */
     margin: 0;             /* elimina márgenes verticales */
@@ -86,7 +117,7 @@ nav {
   gap: 3rem;
   position: relative;
   padding: 1rem;
-  background: #0077a6;
+  background: #0371cc;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -105,29 +136,30 @@ nav ul li a {
   color: #fff;
 }
 
-/* ===== Megamenú (solo al hover) ===== */
 .megamenu {
-  display: none;                 /* oculto por defecto */
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
   position: absolute;
   top: 100%;
   left: 0;
-  background: #0077a6;
+  background: #0371cc;
   padding: 1rem;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   flex-direction: row;
   gap: 2rem;
   white-space: nowrap;
   z-index: 200;
+  pointer-events: none;
 }
 
-/* muestra el megamenú al pasar el ratón por “Administración” */
-nav ul:nth-of-type(3):hover .megamenu {
-  display: flex;
-}
-
-/* muestra el megamenú al pasar el ratón por "Sistema” */
+nav ul:nth-of-type(3):hover .megamenu,
 nav ul:nth-of-type(4):hover .megamenu {
-  display: flex;
+  max-height: 500px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 /* Columnas dentro del megamenú */
@@ -170,13 +202,43 @@ nav ul:nth-of-type(4):hover .megamenu {
   transform: scaleX(1);
 }
 
+
+/* Footer */
+
+.footer {
+  background-color: #005aa3;
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: auto;
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.footer-section h4 {
+  margin-bottom: 0.5rem;
+  color: #e6f2f7;
+}
+
+.footer-section p {
+  margin: 0.25rem 0;
+}
+
+
   /* ===== Contenido principal (iframe) ===== */
 
 
 main iframe#contenido {
   display: flex;
   flex-direction: column;
-  height: 84vh ;
+  height: 74vh ;
   width: 100%;
 }
   /* Iframe */

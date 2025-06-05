@@ -1,0 +1,110 @@
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/matriz.css">
+<link rel="stylesheet" href="/assets/css/modal.css">
+<link rel="stylesheet" href="/assets/css/btn.css">
+<link rel="stylesheet" href="/assets/css/tablas.css">
+<link rel="stylesheet" href="../assets/css/paneles.css">
+
+<!-- views/panel-alumnos-tabla.html -->
+<section class="panel-tabla-container">
+  <!-- Tabla Alumnos -->
+  <div class="tabla-wrapper">
+    <h3>Alumnos</h3>
+    <table class="tabla-panel">
+      <tbody>
+        <tr onclick="mostrarModal(document.getElementById('modalCrearAlumno'))">
+          <td>Inscribir Alumno</td>
+        </tr>
+        <tr onclick="mostrarModal(document.getElementById('modalModificarAlumno'))">
+          <td>Pase de Alumno</td>
+        </tr>
+        <tr onclick="mostrarModal(document.getElementById('modalEliminarAlumno'))">
+          <td>Egreso de Alumno</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Tabla Tutores 
+  <div class="tabla-wrapper">
+    <h3>Tutores</h3>
+    <table class="tabla-panel">
+      <tbody>
+        <tr onclick="mostrarModal(document.getElementById('modalCrearTutor'))">
+          <td>Crear Tutor</td>
+        </tr>
+        <tr onclick="mostrarModal(document.getElementById('modalModificarTutor'))">
+          <td>Modificar Tutor</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  -->
+</section>
+
+<div class="container-busqueda">
+  <select class="filtro selector-tabla" id="selector-tabla" onchange="cambiarTabla()">
+    <option value="alumnos">Alumnos</option>
+    <option value="tutores">Tutores</option>
+  </select>
+
+
+  <div class="buscador-container">
+    <input class="buscador" type="text" id="searchInput" placeholder="Buscar alumno..." />
+  </div>
+
+  <div class="filtro-container">
+    <select class="filtro" id="grado">
+      <option value="">Todos</option>
+      <option value="1°">1°</option>
+      <option value="2°">2°</option>
+      <option value="3°">3°</option>
+    </select>
+  </div>
+</div>
+
+<table id="tabla-alumnos" class="tabla">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Legajo</th>
+      <th>Grado</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+      <!--  Se rellena la tabla desde la DB  -->
+  </tbody>
+</table>
+
+<table id="tabla-tutores" class="tabla" style="display: none;">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>DNI</th>
+      <th>CUIL</th>
+      <th>Teléfono</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <!--  Se rellena la tabla desde la DB  -->  
+  </tbody>
+</table>
+
+<script src="/assets/js/ui.js"></script>
+<script src="/assets/js/modal.js"></script>
+<script src="/assets/js/filtros.js"></script>
+<script src="/assets/js/matriz.js"></script>
+
+<!--  Alumnos desde la DB  -->
+<script src="/assets/js/controllers/alumnos.js"></script>
+
+<!--  Tutores desde la DB  -->
+<script src="/assets/js/controllers/tutores.js"></script>
+
+<!-- Controlador del panel -->
+<script src="../assets/js/controllers/panelAlumnosTutores.js"></script>

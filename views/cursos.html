@@ -1,155 +1,46 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tabla y Modal de Alumnos</title>
-    <link rel="stylesheet" href="/assets/css/base.css">
-    <link rel="stylesheet" href="/assets/css/matriz.css">
-    <link rel="stylesheet" href="/assets/css/modal.css">
-    <link rel="stylesheet" href="/assets/css/btn.css">
-    <link rel="stylesheet" href="/assets/css/tablas.css">
-</head>
-<body>
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/matriz.css">
+<link rel="stylesheet" href="/assets/css/modal.css">
+<link rel="stylesheet" href="/assets/css/btn.css">
+<link rel="stylesheet" href="/assets/css/tablas.css">
+<link rel="stylesheet" href="../assets/css/paneles.css">
 
-    <div class="container-busqueda">
-        <div class="buscador-container">
-            <input class="buscador" type="text" id="searchInput" placeholder="Buscar alumno..." />
-        </div>
+<!-- views/panel-alumnos-tabla.html -->
+<section class="panel-tabla-container">
 
-        <div class="filtro-container">
-            <select class="filtro" id="grado">
-            <option value="">Todos</option>
-            <option value="1°">1°</option>
-            <option value="2°">2°</option>
-            <option value="3°">3°</option>
-            </select>
-        </div>
-    </div>
-
-<table id="alumnosTable" class="tabla">
-<thead>
-    <tr>
-    <th>Id Curso</th>
-    <th>Curso</th>
-    <th>Plan</th>
-    <th>Acciones</th>
-    </tr>
-</thead>
-<tbody>
-    <!--  Se rellena la tabla desde la DB  -->
-</tbody>
-</table>
-
-<!-- Modal -->
-<div id="modalAlumno" class="modal">
-<div class="modal-content">
-    <span class="close-btn" onclick="cerrarModal()">&times;</span>
-    <div class="perfil-container">
-    <div class="perfil-info">
-        <div class="perfil-seccion"></div>
-        <table class="perfil-tabla">
-        <thead>
-            <th colspan="5">Datos del alumno</th>
-        </thead>
-        <tr>
-            <td>nombre</td>
-            <td></td>
-            <td>apellidos</td>
-            <td></td>
-            <td rowspan="8">pdf</td>
-        </tr>
-        <tr></tr>
-        <tr>
-            <td>fecha nacimiento</td>
-            <td></td>
-            <td>numero legajo</td>
-            <td></td>
-        </tr>
-        <tr></tr>
-        <tr>
-            <td>n° dni</td>
-            <td></td>
-            <td>tutor</td>
-            <td></td>
-        </tr>
-        <tr></tr>
-        <tr>
-            <td>correo electronico</td>
-            <td></td>
-            <td>telefono movil</td>
-            <td></td>
-        </tr>
-        <tr></tr>
-        <thead>
-            <th colspan="5">domicilio</th>
-        </thead>
-        <tr>
-            <td>direccion</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>localidad</td>
-            <td></td>
-            <td>codigo postal</td>
-            <td></td>
-            <td>provincia</td>
-            <td></td>
-        </tr>
-        <tr></tr>
-        <thead>
-            <th colspan="5">curso actual</th>
-        </thead>
-        <tr></tr>
-        <tr>
-            <td>curso</td>
-            <td></td>
-            <td></td>
-            <td>especializacion</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>escuela de origen</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <thead>
-            <th colspan="5">tutor</th>
-        </thead>
-        <tr></tr>
-        <tr>
-            <td>nombre</td>
-            <td></td>
-            <td></td>
-            <td>apellido</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>dni</td>
-            <td></td>
-            <td></td>
-            <td>cuil</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>telefono</td>
-            <td></td>
-            <td></td>
-            <td>mail</td>
-            <td></td>
-        </tr>
+    <!-- Tabla de acciones de cursos -->
+    <div class="tabla-wrapper">
+        <h3>Cursos</h3>
+        <table class="tabla-panel">
+            <tbody>
+                <tr onclick="mostrarModal(document.getElementById('modalCrearCurso'))">
+                    <td>Crear Curso</td>
+                </tr>
+                <tr onclick="mostrarModal(document.getElementById('modalModificarCurso'))">
+                    <td>Modificar Curso</td>
+                </tr>
+            </tbody>
         </table>
     </div>
+</section>
+
+<div class="container-busqueda">
+    <div class="buscador-container">
+        <input class="buscador" type="text" id="searchInput" placeholder="Buscar curso" />
     </div>
 </div>
-</div>
 
-<script src="/assets/js/ui.js"></script>
-<script src="/assets/js/modal.js"></script>
-<script src="/assets/js/filtros.js"></script>
-<script src="/assets/js/matriz.js"></script>
-
-</body>
-</html>
+<!--  Tabla cursos  -->
+<table id="tabla-cursos" class="tabla">
+    <thead>
+        <tr>
+        <th>Id Curso</th>
+        <th>Curso</th>
+        <th>Plan</th>
+        <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!--  Se rellena la tabla desde la DB  -->
+    </tbody>
+</table>

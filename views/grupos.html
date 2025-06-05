@@ -4,207 +4,282 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestión de Grupos</title>
-    <link rel="stylesheet" href="/assets/css/tablas.css">
+    <link rel="stylesheet" href="/assets/css/base.css">
     <style>
-        .expand-btn {
-            background: #00384a;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            padding: 4px 12px;
-            cursor: pointer;
-            font-size: 1.1em;
-            transition: background 0.2s;
-            width: 32px;
+        body {
+            background: linear-gradient(120deg, #e3edf7 0%, #f5fafd 100%);
+            min-height: 100vh;
+        }
+        .grupos-container {
+            max-width: 98vw;
+            margin: 40px auto;
+            padding: 20px 0 36px 0;
+        }
+        h1 {
             text-align: center;
+            margin-bottom: 30px;
+            color: #1565c0;
+            font-size: 2.3em;
+            letter-spacing: 1px;
         }
-        .expand-btn:hover {
-            background: #005d8f;
+        .buscador-grupo {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 36px auto;
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 2px 8px #1565c021;
+            padding: 3px 15px 3px 12px;
         }
-        .user-list-row {
-            display: none;
-            background: #f8fafd;
+        .buscador-grupo input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 1.13em;
+            flex: 1;
+            padding: 12px 8px;
         }
-        .user-list-table {
-            width: 90%;
-            margin: 10px auto;
-            border-collapse: collapse;
+        .buscador-grupo .lupa {
+            font-size: 1.3em;
+            color: #1976d2;
+            margin-right: 7px;
         }
-        .user-list-table th, .user-list-table td {
-            border: 1px solid #ddd;
-            padding: 6px 12px;
-            text-align: left;
+        .grupos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 38px 32px;
+            width: 95%;
+            margin: 0 auto;
+            align-items: start; /* CLAVE para efecto acordeón */
         }
-        .user-list-table th {
-            background: #00384a;
-            color: #fff;
+        .grupo-card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 22px #1976d222, 0 1.5px 8px #3f51b529;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-width: 0;
+            position: relative;
+            padding: 46px 38px 36px 38px;
+            cursor: pointer;
+            transition: box-shadow 0.18s, transform 0.12s;
+            overflow: visible;
+            min-height: 110px;
         }
-        .tabla .expanded {
-            display: table-row;
+        .grupo-card.active, .grupo-card:focus-within {
+            box-shadow: 0 8px 34px #1976d244;
+            transform: translateY(-2px) scale(1.03);
+        }
+        .grupo-titulo {
+            font-size: 1.6em;
+            font-weight: 700;
+            margin-bottom: 0;
+            color: #1976d2;
+            letter-spacing: 0.5px;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            user-select: none;
+        }
+        .arrow {
+            margin-left: 7px;
+            font-size: 1.2em;
+            color: #1976d2;
+            transition: transform 0.18s;
+            user-select: none;
+        }
+        .grupo-card .arrow {
+            transform: rotate(0deg);
+        }
+        .grupo-card.active .arrow {
+            transform: rotate(90deg);
+        }
+        .usuarios-panel {
+            width: 100%;
+            background: #f4fafd;
+            box-shadow: 0 2px 16px #1976d215;
+            border-radius: 15px;
+            margin-top: 18px;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.25s, padding 0.25s;
+            padding: 0 0;
+            pointer-events: none;
+            display: block;
+        }
+        .grupo-card.active .usuarios-panel {
+            max-height: 340px;
+            opacity: 1;
+            padding: 22px 18px 18px 18px;
+            pointer-events: auto;
+        }
+        .usuarios-titulo {
+            color: #1565c0;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.13em;
+            letter-spacing: 0.3px;
+        }
+        .usuarios-lista {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 13px 16px;
+        }
+        .usuarios-lista li {
+            background: linear-gradient(90deg,#e3f2fd 60%,#bbdefb 100%);
+            border-radius: 18px;
+            padding: 10px 21px 10px 14px;
+            font-size: 1.11em;
+            color: #0d47a1;
+            box-shadow: 0 1.5px 6px #42a5f522;
+            min-width: 90px;
+            display: flex;
+            align-items: center;
+            transition: background .18s;
+        }
+        .usuarios-lista li:before {
+            content: "👤";
+            margin-right: 6px;
+            font-size: 1em;
+        }
+        .sin-usuarios {
+            color: #888;
+            font-style: italic;
+            padding: 0 0 5px 2px;
+            font-size: 1.07em;
+        }
+        @media (max-width: 1250px) {
+            .grupos-grid { width: 99vw; }
+        }
+        @media (max-width: 900px) {
+            .grupo-card { padding: 22px 10px 16px 10px; }
+            .grupo-titulo { font-size: 1.18em; }
+        }
+        @media (max-width: 600px) {
+            .grupos-grid { grid-template-columns: 1fr; gap: 19px; }
+            .grupo-card { padding: 13px 3vw 13px 3vw; min-height: 80px;}
+            .grupo-titulo { font-size: 1em; }
+            .usuarios-panel { min-width: 60vw; max-width: 97vw; }
+            .grupo-card.active .usuarios-panel { padding: 9px 4vw 9px 4vw; }
         }
     </style>
 </head>
 <body>
-    <h2>Gestión de Grupos de Usuarios</h2>
-    <table class="tabla">
-        <thead>
-            <tr>
-                <th>Grupo</th>
-                <th>Privilegios</th>
-                <th>Usuarios Asignados</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Administradores -->
-            <tr>
-                <td>Administradores</td>
-                <td>Acceso total: crear, modificar, eliminar, ver todo</td>
-                <td>
-                    <button class="expand-btn" onclick="toggleUsuarios(this, 'admin')">+</button>
-                </td>
-            </tr>
-            <tr class="user-list-row" id="usuarios-admin">
-                <td colspan="3">
-                    <table class="user-list-table">
-                        <thead>
-                            <tr>
-                                <th>Nombre de usuario</th>
-                                <th>Nombre</th>
-                                <th>DNI</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>sandradeadm</td>
-                                <td>Sandra Redondo</td>
-                                <td>30333444</td>
-                            </tr>
-                            <tr>
-                                <td>admin</td>
-                                <td>Admin Principal</td>
-                                <td>11111111</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-            <!-- Modificación -->
-            <tr>
-                <td>Modificación</td>
-                <td>Pueden crear y modificar registros, pero no eliminar</td>
-                <td>
-                    <button class="expand-btn" onclick="toggleUsuarios(this, 'modif')">+</button>
-                </td>
-            </tr>
-            <tr class="user-list-row" id="usuarios-modif">
-                <td colspan="3">
-                    <table class="user-list-table">
-                        <thead>
-                            <tr>
-                                <th>Nombre de usuario</th>
-                                <th>Nombre</th>
-                                <th>DNI</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>juanp</td>
-                                <td>Juan Pérez</td>
-                                <td>22111222</td>
-                            </tr>
-                            <tr>
-                                <td>anag</td>
-                                <td>Ana García</td>
-                                <td>32323232</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-            <!-- Lectura -->
-            <tr>
-                <td>Lectura</td>
-                <td>Solo pueden ver información, sin modificar</td>
-                <td>
-                    <button class="expand-btn" onclick="toggleUsuarios(this, 'lectura')">+</button>
-                </td>
-            </tr>
-            <tr class="user-list-row" id="usuarios-lectura">
-                <td colspan="3">
-                    <table class="user-list-table">
-                        <thead>
-                            <tr>
-                                <th>Nombre de usuario</th>
-                                <th>Nombre</th>
-                                <th>DNI</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>carlosl</td>
-                                <td>Carlos López</td>
-                                <td>44777888</td>
-                            </tr>
-                            <tr>
-                                <td>luciaf</td>
-                                <td>Lucía Fernández</td>
-                                <td>45612378</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-            <!-- Escritura -->
-            <tr>
-                <td>Escritura</td>
-                <td>Pueden crear nuevos registros, pero no modificarlos ni eliminarlos</td>
-                <td>
-                    <button class="expand-btn" onclick="toggleUsuarios(this, 'escritura')">+</button>
-                </td>
-            </tr>
-            <tr class="user-list-row" id="usuarios-escritura">
-                <td colspan="3">
-                    <table class="user-list-table">
-                        <thead>
-                            <tr>
-                                <th>Nombre de usuario</th>
-                                <th>Nombre</th>
-                                <th>DNI</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>lauram</td>
-                                <td>Laura Martínez</td>
-                                <td>40112233</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <script>
-        function toggleUsuarios(btn, grupo) {
-            // Cierra otras filas abiertas
-            document.querySelectorAll('.user-list-row').forEach(function(row) {
-                if (row.id !== 'usuarios-' + grupo) {
-                    row.classList.remove('expanded');
-                }
+<div class="grupos-container">
+    <h1>Gestión de Grupos</h1>
+    <form class="buscador-grupo" onsubmit="return false;">
+        <span class="lupa">&#128269;</span>
+        <input type="text" placeholder="Buscar usuario..." id="buscarGrupo" autocomplete="off"/>
+    </form>
+    <div class="grupos-grid" id="panelGrupos">
+        <!-- Paneles generados dinámicamente -->
+    </div>
+</div>
+<script>
+let gruposUsuarios = []; // [{nombre, id_grupo, usuarios:[{nombre}]}]
+
+async function cargarGrupos() {
+    const contenedor = document.getElementById('panelGrupos');
+    contenedor.innerHTML = "<div style='text-align:center;color:#888;width:100%'>Cargando grupos...</div>";
+    try {
+        const gruposResp = await fetch('http://localhost:3000/api/grupos');
+        const grupos = await gruposResp.json();
+        // Traer usuarios para todos los grupos
+        const gruposUsuariosTmp = [];
+        for (const grupo of grupos) {
+            const usuarios = await fetch(`http://localhost:3000/api/grupos/${grupo.id_grupo}/usuarios`).then(r=>r.json());
+            gruposUsuariosTmp.push({
+                nombre: grupo.nombre,
+                id_grupo: grupo.id_grupo,
+                usuarios: usuarios
             });
-            document.querySelectorAll('.expand-btn').forEach(function(b) {
-                if (b !== btn) b.textContent = "+";
-            });
-            // Alterna la fila de usuarios seleccionada
-            const fila = document.getElementById('usuarios-' + grupo);
-            if (fila.classList.contains('expanded')) {
-                fila.classList.remove('expanded');
-                btn.textContent = "+";
-            } else {
-                fila.classList.add('expanded');
-                btn.textContent = "−";
-            }
         }
-    </script>
+        gruposUsuarios = gruposUsuariosTmp;
+        renderizarGrupos(gruposUsuarios, "");
+    } catch (err) {
+        contenedor.innerHTML = "<div style='text-align:center;color:red;width:100%'>Error cargando grupos</div>";
+    }
+}
+
+function renderizarGrupos(grupos, filtroUsuario) {
+    const contenedor = document.getElementById('panelGrupos');
+    contenedor.innerHTML = '';
+    let mostrarGrupos = grupos;
+    if (filtroUsuario && filtroUsuario.length > 0) {
+        // Solo mostrar grupos donde algún usuario coincida con el filtro
+        mostrarGrupos = grupos.map(g => {
+            // Filtramos usuarios que coincidan
+            const usuariosFiltrados = g.usuarios.filter(u => u.nombre.toLowerCase().includes(filtroUsuario));
+            return {
+                ...g,
+                usuarios: usuariosFiltrados
+            };
+        }).filter(g => g.usuarios.length > 0);
+    }
+    if (!mostrarGrupos.length) {
+        contenedor.innerHTML = "<div style='text-align:center;color:#888;width:100%'>No se encontraron usuarios.</div>";
+        return;
+    }
+    mostrarGrupos.forEach(grupo => {
+        const card = document.createElement('div');
+        card.className = 'grupo-card';
+
+        // Título del grupo
+        const titulo = document.createElement('div');
+        titulo.className = 'grupo-titulo';
+        titulo.textContent = grupo.nombre;
+
+        // Flecha
+        const arrow = document.createElement('span');
+        arrow.className = 'arrow';
+        arrow.innerHTML = '&#9654;';
+        titulo.appendChild(arrow);
+        card.appendChild(titulo);
+
+        // Panel de usuarios (bloque, no absoluto)
+        const usuariosPanel = document.createElement('div');
+        usuariosPanel.className = 'usuarios-panel';
+        if (!grupo.usuarios.length) {
+            usuariosPanel.innerHTML = `<div class="usuarios-titulo">Usuarios en el grupo:</div><div class="sin-usuarios">No hay usuarios en este grupo.</div>`;
+        } else {
+            let html = `<div class="usuarios-titulo">Usuarios en el grupo:</div>`;
+            html += `<ul class="usuarios-lista">`;
+            grupo.usuarios.forEach(u => {
+                html += `<li>${u.nombre}</li>`;
+            });
+            html += `</ul>`;
+            usuariosPanel.innerHTML = html;
+        }
+        card.appendChild(usuariosPanel);
+
+        // Acordeón: abrir/cerrar solo uno (con hover)
+        card.addEventListener('mouseenter', function() {
+            document.querySelectorAll('.grupo-card.active').forEach(el => el.classList.remove('active'));
+            card.classList.add('active');
+        });
+        card.addEventListener('mouseleave', function() {
+            card.classList.remove('active');
+        });
+
+        contenedor.appendChild(card);
+    });
+}
+
+// Buscador de usuarios en tiempo real
+document.getElementById('buscarGrupo').addEventListener('input', function() {
+    const filtro = this.value.trim().toLowerCase();
+    renderizarGrupos(gruposUsuarios, filtro);
+});
+
+cargarGrupos();
+</script>
 </body>
 </html>

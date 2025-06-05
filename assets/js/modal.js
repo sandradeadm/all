@@ -1,19 +1,31 @@
-// Función para abrir el modal
-function mostrarModal() {
-    const modal = document.getElementById("modalAlumno");
-    modal.style.display = "block";
+function mostrarModal(modal) {
+  modal.classList.remove('hide');
+  modal.classList.add('show');
+  modal.style.display = 'block';
 }
 
-// Función para cerrar el modal
-function cerrarModal() {
-    const modal = document.getElementById("modalAlumno");
-    modal.style.display = "none";
+function cerrarModal(modal) {
+  modal.classList.remove('show');
+  modal.classList.add('hide');
+
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 300); // coincide con la duración de las animaciones
 }
 
-// Cierra el modal si se hace clic fuera del contenido
-window.onclick = function(event) {
-    const modal = document.getElementById("modalAlumno");
+window.addEventListener('click', function (event) {
+  document.querySelectorAll('.modal.show').forEach(modal => {
     if (event.target === modal) {
-        cerrarModal();
+      cerrarModal(modal);
     }
-}
+  });
+});
+
+// Cierra el modal al presionar la tecla Escape
+window.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape') {
+    document.querySelectorAll('.modal.show').forEach(modal => {
+      cerrarModal(modal);
+    });
+  }
+});
