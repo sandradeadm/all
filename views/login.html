@@ -1,32 +1,187 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar sesión | E.E.S.T N°4</title>
-    <link rel="icon" href="/assets/img/Logo.png" type="image/png">
-    <link rel="stylesheet" href="/assets/css/login.css">
-    <link rel="stylesheet" href="/assets/css/base.css">
-    <link rel="stylesheet" href="/assets/css/matriz.css">
-    <link rel="stylesheet" href="/assets/css/modal.css">
-    <link rel="stylesheet" href="/assets/css/btn.css">
-    <link rel="stylesheet" href="/assets/css/tablas.css">
+  <meta charset="UTF-8"/>
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Usa los mismos estilos base -->
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(120deg, #74ebd5 0%, #ACB6E5 100%);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', Arial, sans-serif;
+    }
+    .login-container {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 6px 38px #1565c033, 0 1.5px 6px #74ebd522;
+      padding: 44px 32px 32px 32px;
+      max-width: 350px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1.5px solid #74ebd580;
+      animation: fadeInUp 1s;
+    }
+    @keyframes fadeInUp {
+      from { transform: translateY(40px); opacity: 0;}
+      to { transform: translateY(0); opacity: 1;}
+    }
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .login-logo img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 8px #74ebd555;
+    }
+    .login-logo span {
+      color: #1976d2;
+      font-weight: bold;
+      font-size: 1.15em;
+      letter-spacing: 1.2px;
+      text-shadow: 0 2px 12px #1565c044;
+    }
+    .login-container h2 {
+      color: #1565c0;
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-size: 1.45em;
+      letter-spacing: 1px;
+      text-align: center;
+      text-shadow: 0 2px 12px #1976d233;
+    }
+    .input-group {
+      width: 100%;
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .input-group label {
+      display: block;
+      color: #1976d2;
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 1em;
+      letter-spacing: .4px;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 12px 11px;
+      border-radius: 10px;
+      border: 1.5px solid #74ebd5;
+      background: #f4fafd;
+      font-size: 1.05em;
+      font-family: inherit;
+      color: #1565c0;
+      outline: none;
+      transition: border .2s, box-shadow .18s;
+      box-shadow: 0 1px 5px #74ebd522;
+    }
+    .input-group input:focus {
+      border-color: #1976d2;
+      box-shadow: 0 2px 12px #74ebd533;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 13px 0;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #1976d2 80%, #74ebd5 140%);
+      color: #fff;
+      border: none;
+      font-size: 1.09em;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 2px 16px #1565c033;
+      letter-spacing: .5px;
+      transition: background .18s, transform .13s;
+    }
+    .login-container button:hover {
+      background: linear-gradient(90deg, #1976d2 65%, #00c6fb 130%);
+      transform: scale(1.04);
+    }
+    .mensaje {
+      color: #e53935;
+      text-align: center;
+      margin-top: 15px;
+      min-height: 22px;
+      font-size: 1em;
+      letter-spacing: .2px;
+      font-weight: 600;
+    }
+    @media (max-width: 500px) {
+      .login-container {
+        padding: 18px 3vw;
+        max-width: 97vw;
+      }
+      .login-logo img {
+        width: 32px;
+        height: 32px;
+      }
+    }
+  </style>
+  <script>
+    // Si el usuario ya está logueado, redirige a index.html en la raíz
+    if (localStorage.getItem('usuario')) {
+      window.location.href = '../index.html';
+    }
+  </script>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Iniciar Sesión</h2>
-        <form>
-            <input class="user-container" type="text" id="user" placeholder="Nombre de Usuario" required>
-
-            <div class="password-container">
-                <input type="password" id="password" placeholder="Contraseña" required>
-                <span class="toggle-password" onclick="togglePassword()">Mostrar</span>
-            </div>
-
-            <button type="submit">Ingresar</button>
-            <p class="error" id="error-msg"></p>
-        </form>
+  <form class="login-container" id="formLogin" autocomplete="off">
+    <div class="login-logo">
+      <img src="/assets/img/Logo.png" alt="Logo E.E.S.T N°4">
+      <span>E.E.S.T N°4</span>
     </div>
-    <script src="/assets/js/ui.js"></script>
+    <h2>Iniciar sesión</h2>
+    <div class="input-group">
+      <label for="usuario">Usuario</label>
+      <input type="text" id="usuario" placeholder="Usuario" required autofocus>
+    </div>
+    <div class="input-group">
+      <label for="clave">Contraseña</label>
+      <input type="password" id="clave" placeholder="Contraseña" required>
+    </div>
+    <button type="submit">Entrar</button>
+    <div class="mensaje" id="mensaje"></div>
+  </form>
+<script>
+  document.getElementById('formLogin').addEventListener('submit', async function(e){
+    e.preventDefault();
+    // Envía siempre el usuario en minúsculas (case-insensitive)
+    const nombre = document.getElementById('usuario').value.trim().toLowerCase();
+    const pass = document.getElementById('clave').value;
+    const msj = document.getElementById('mensaje');
+    msj.textContent = '';
+    try{
+      const res = await fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ nombre, pass })
+      });
+      const data = await res.json();
+      if(data.success){
+        localStorage.setItem('usuario', JSON.stringify(data.usuario));
+        window.location.href = '../index.html';
+      }else{
+        msj.textContent = data.error || "Error de autenticación";
+      }
+    }catch(err){
+      msj.textContent = "No se pudo conectar al servidor";
+    }
+  });
+</script>
 </body>
 </html>

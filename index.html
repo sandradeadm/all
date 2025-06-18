@@ -4,12 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home | Administración del Sistema</title>
+    <script>
+      // Protección: si no hay usuario logueado, redirige al login
+      if (!localStorage.getItem('usuario')) {
+        window.location.href = 'views/login.html';
+      }
+    </script>
     <link rel="icon" href="/assets/img/Logo.png" type="image/png">
     <link rel="stylesheet" href="/assets/css/base.css">
     <link rel="stylesheet" href="/assets/css/matriz.css">
     <link rel="stylesheet" href="/assets/css/modal.css">
     <link rel="stylesheet" href="/assets/css/btn.css">
     <link rel="stylesheet" href="/assets/css/tablas.css">
+    <style>
+      /* Estilo solo para el usuario y el botón cerrar sesión */
+      .user-menu {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      #user-greeting {
+        background: #fff;
+        color: #1976d2;
+        font-weight: 600;
+        padding: 6px 16px;
+        border-radius: 14px;
+        box-shadow: 0 1px 6px #1565c022;
+        letter-spacing: .5px;
+        font-size: 1em;
+      }
+      #logoutBtn {
+        padding: 6px 18px;
+        border-radius: 14px;
+        background: linear-gradient(90deg, #1976d2 80%, #74ebd5 140%);
+        color: #fff;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 1px 6px #1565c022;
+        letter-spacing: .5px;
+        font-size: 1em;
+        transition: background .18s, transform .13s;
+      }
+      #logoutBtn:hover {
+        background: linear-gradient(90deg, #1976d2 65%, #00c6fb 130%);
+        transform: scale(1.06);
+      }
+    </style>
 </head>
 <body>
 
@@ -23,13 +64,13 @@
             </div>
         </div>
         <!--  Nav  -->
-         <h1>Sistema de Administación de Alumnos</h1>
+        <h1>Sistema de Administación de Alumnos</h1>
         <button id="menu-toggle" class="menu-btn">☰</button>
         
         <!-- Usuario derecha -->
         <div class="user-menu">
-            <span class="user-name">Hola, @usuario</span>
-            <button class="logout-btn">Cerrar sesión</button>
+            <span id="user-greeting" class="user-name">Hola, @usuario</span>
+            <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
         </div>
     </header>
 
@@ -60,7 +101,6 @@
                         <li><a href="#" onclick="cargarVista('usuarios.html')">Usuarios</a></li>
                         <li><a href="#" onclick="cargarVista('roles.html')">Roles</a></li>
                         <li><a href="#" onclick="cargarVista('grupos.html')">Grupos</a></li>
-                        
                         <li class="nav-item"><a href="#" onclick="cargarVista('log.html')">Bitacora</a></li>
                     </ul>
                 </div>
@@ -71,19 +111,17 @@
     <main>
         <iframe class="frame" id="contenido" src="views/bienvenida.html" frameborder="0"></iframe>
     </main>
-<footer class="footer">
+    <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
                 <h4>Escuela Técnica N°4 Prof. Ricardo A. Lopez</h4>
                 <p>Sistema de gestión escolar</p>
             </div>
-
             <div class="footer-section">
                 <h4>Ubicación</h4>
                 <p>Calle 111 N° xxxx, Berazategui</p>
                 <p>Tel: xx-xxxx-xxxx</p>
             </div>
-
             <div class="footer-section">
                 <h4>Desarrollado por</h4>
                 <p>Nuestros nombres</p>
@@ -92,5 +130,19 @@
         </div>
     </footer>
     <script src="assets/js/ui.js"></script>
+    <script>
+      // Mostrar nombre del usuario logueado
+      const usuario = JSON.parse(localStorage.getItem('usuario'));
+      if (usuario && usuario.nombre) {
+        document.getElementById('user-greeting').textContent = `Hola, @${usuario.nombre}`;
+      } else {
+        document.getElementById('user-greeting').textContent = "Hola, usuario";
+      }
+      // Cerrar sesión
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        localStorage.removeItem('usuario');
+        window.location.href = 'views/login.html';
+      });
+    </script>
 </body>
 </html>

@@ -5,7 +5,7 @@
 -- Dumped from database version 17.4
 -- Dumped by pg_dump version 17.4
 
--- Started on 2025-06-05 16:17:40
+-- Started on 2025-06-18 12:24:09
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -288,7 +288,10 @@ CREATE TABLE public.usuarios (
     pass character varying(15),
     id_rol integer NOT NULL,
     id_grupo integer NOT NULL,
-    dni character varying(8)
+    dni character varying(8),
+    deshabilitado boolean DEFAULT false,
+    bloqueado boolean DEFAULT false,
+    intentos integer DEFAULT 0
 );
 
 
@@ -310,7 +313,7 @@ ALTER TABLE public.usuarios ALTER COLUMN id_usuario ADD GENERATED ALWAYS AS IDEN
 
 
 --
--- TOC entry 4935 (class 0 OID 16402)
+-- TOC entry 4938 (class 0 OID 16402)
 -- Dependencies: 220
 -- Data for Name: grupos; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -320,11 +323,12 @@ COPY public.grupos (id_grupo, nombre) FROM stdin;
 7	Profesores
 8	Alumnos
 9	Secretaría
+10	prueba
 \.
 
 
 --
--- TOC entry 4933 (class 0 OID 16392)
+-- TOC entry 4936 (class 0 OID 16392)
 -- Dependencies: 218
 -- Data for Name: logs; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -334,7 +338,7 @@ COPY public.logs (id_log, id_operacion, hora_y_fecha, id_usuario, mac) FROM stdi
 
 
 --
--- TOC entry 4934 (class 0 OID 16397)
+-- TOC entry 4937 (class 0 OID 16397)
 -- Dependencies: 219
 -- Data for Name: operaciones; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -347,7 +351,7 @@ COPY public.operaciones (id_operacion, descripcion) FROM stdin;
 
 
 --
--- TOC entry 4937 (class 0 OID 16412)
+-- TOC entry 4940 (class 0 OID 16412)
 -- Dependencies: 222
 -- Data for Name: pass_historica; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -357,7 +361,7 @@ COPY public.pass_historica (id_usuario, pass_ult, fecha_cambio) FROM stdin;
 
 
 --
--- TOC entry 4936 (class 0 OID 16407)
+-- TOC entry 4939 (class 0 OID 16407)
 -- Dependencies: 221
 -- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -374,33 +378,34 @@ COPY public.roles (id_rol, nombre, descripcion) FROM stdin;
 
 
 --
--- TOC entry 4932 (class 0 OID 16387)
+-- TOC entry 4935 (class 0 OID 16387)
 -- Dependencies: 217
 -- Data for Name: usuarios; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.usuarios (id_usuario, nombre, pass, id_rol, id_grupo, dni) FROM stdin;
-2	sandradeadm	asdf123	5	7	48708268
-3	santiagoan	pvbkg5	5	6	87654987
-4	skajff	aksjfj	7	7	8473827
-5	snati	374hjh	7	7	73647634
-6	skajfji	u3y4bfj	7	7	76372678
-7	sjfhja	281738jr	7	7	37481978
-8	segur	3874jhf	2	6	12874874
+COPY public.usuarios (id_usuario, nombre, pass, id_rol, id_grupo, dni, deshabilitado, bloqueado, intentos) FROM stdin;
+2	sandradeadm	asdf123	5	10	48708268	f	f	0
+9	prueba	pureba123	4	8	47676498	f	f	0
+4	skajff	aksjfj	7	7	8473827	f	f	0
+5	snati	374hjh	7	7	73647634	f	f	0
+6	skajfji	u3y4bfj	7	7	76372678	f	f	0
+7	sjfhja	281738jr	7	7	37481978	f	f	0
+8	segur	3874jhf	2	6	12874874	f	f	0
+3	santiagoan	pvbkg5	5	6	87654987	f	f	0
 \.
 
 
 --
--- TOC entry 4948 (class 0 OID 0)
+-- TOC entry 4951 (class 0 OID 0)
 -- Dependencies: 224
 -- Name: grupos_id_grupo_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.grupos_id_grupo_seq', 9, true);
+SELECT pg_catalog.setval('public.grupos_id_grupo_seq', 10, true);
 
 
 --
--- TOC entry 4949 (class 0 OID 0)
+-- TOC entry 4952 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: logs_id_log_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -409,7 +414,7 @@ SELECT pg_catalog.setval('public.logs_id_log_seq', 3, true);
 
 
 --
--- TOC entry 4950 (class 0 OID 0)
+-- TOC entry 4953 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: operaciones_id_operacion_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -418,25 +423,25 @@ SELECT pg_catalog.setval('public.operaciones_id_operacion_seq', 1, true);
 
 
 --
--- TOC entry 4951 (class 0 OID 0)
+-- TOC entry 4954 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: roles_id_rol_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.roles_id_rol_seq', 8, true);
+SELECT pg_catalog.setval('public.roles_id_rol_seq', 10, true);
 
 
 --
--- TOC entry 4952 (class 0 OID 0)
+-- TOC entry 4955 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: usuarios_id_usuario_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.usuarios_id_usuario_seq', 8, true);
+SELECT pg_catalog.setval('public.usuarios_id_usuario_seq', 9, true);
 
 
 --
--- TOC entry 4777 (class 2606 OID 16406)
+-- TOC entry 4780 (class 2606 OID 16406)
 -- Name: grupos grupos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -445,7 +450,7 @@ ALTER TABLE ONLY public.grupos
 
 
 --
--- TOC entry 4773 (class 2606 OID 16396)
+-- TOC entry 4776 (class 2606 OID 16396)
 -- Name: logs logs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -454,7 +459,7 @@ ALTER TABLE ONLY public.logs
 
 
 --
--- TOC entry 4775 (class 2606 OID 16401)
+-- TOC entry 4778 (class 2606 OID 16401)
 -- Name: operaciones operaciones_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -463,7 +468,7 @@ ALTER TABLE ONLY public.operaciones
 
 
 --
--- TOC entry 4781 (class 2606 OID 16416)
+-- TOC entry 4784 (class 2606 OID 16416)
 -- Name: pass_historica pass_historica_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -472,7 +477,7 @@ ALTER TABLE ONLY public.pass_historica
 
 
 --
--- TOC entry 4779 (class 2606 OID 16411)
+-- TOC entry 4782 (class 2606 OID 16411)
 -- Name: roles roles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -481,7 +486,7 @@ ALTER TABLE ONLY public.roles
 
 
 --
--- TOC entry 4771 (class 2606 OID 16391)
+-- TOC entry 4774 (class 2606 OID 16391)
 -- Name: usuarios usuarios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -490,7 +495,7 @@ ALTER TABLE ONLY public.usuarios
 
 
 --
--- TOC entry 4784 (class 2606 OID 16427)
+-- TOC entry 4787 (class 2606 OID 16427)
 -- Name: logs fk_logs_operaciones; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -499,7 +504,7 @@ ALTER TABLE ONLY public.logs
 
 
 --
--- TOC entry 4785 (class 2606 OID 16432)
+-- TOC entry 4788 (class 2606 OID 16432)
 -- Name: logs fk_logs_usuarios; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -508,7 +513,7 @@ ALTER TABLE ONLY public.logs
 
 
 --
--- TOC entry 4786 (class 2606 OID 16496)
+-- TOC entry 4789 (class 2606 OID 16496)
 -- Name: pass_historica fk_pass_usuario; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -517,7 +522,7 @@ ALTER TABLE ONLY public.pass_historica
 
 
 --
--- TOC entry 4782 (class 2606 OID 16442)
+-- TOC entry 4785 (class 2606 OID 16442)
 -- Name: usuarios fk_usuarios_grupos; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -526,7 +531,7 @@ ALTER TABLE ONLY public.usuarios
 
 
 --
--- TOC entry 4783 (class 2606 OID 16437)
+-- TOC entry 4786 (class 2606 OID 16437)
 -- Name: usuarios fk_usuarios_roles; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -534,7 +539,7 @@ ALTER TABLE ONLY public.usuarios
     ADD CONSTRAINT fk_usuarios_roles FOREIGN KEY (id_rol) REFERENCES public.roles(id_rol);
 
 
--- Completed on 2025-06-05 16:17:42
+-- Completed on 2025-06-18 12:24:10
 
 --
 -- PostgreSQL database dump complete

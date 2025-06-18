@@ -12,8 +12,8 @@
           background: #fff;
           border-radius: 20px;
           max-width: 470px;
-          margin: 32px auto 38px auto;
-          padding: 36px 32px 26px 32px;
+          margin: 20px auto 38px auto;
+          padding: 32px 28px 22px 28px;
           box-shadow: 0 3px 24px #1976d218, 0 1px 4px #1565c022;
           display: flex;
           flex-direction: column;
@@ -21,16 +21,16 @@
         }
         .user-form-card h2 {
           color: #1565c0;
-          font-size: 1.3em;
-          margin-bottom: 24px;
+          font-size: 1.15em;
+          margin-bottom: 16px;
           font-weight: 700;
           letter-spacing: 1px;
         }
         .user-form-row {
           display: flex;
-          gap: 15px;
+          gap: 12px;
           width: 100%;
-          margin-bottom: 17px;
+          margin-bottom: 13px;
           justify-content: center;
         }
         .user-form-row:last-child { margin-bottom: 0; }
@@ -38,8 +38,8 @@
         .user-form-card select {
           background: #f1f6fa;
           border: none;
-          border-radius: 18px;
-          padding: 13px 18px;
+          border-radius: 14px;
+          padding: 10px 14px;
           font-size: 1em;
           box-shadow: 0 1.5px 6px #1565c012;
           outline: none;
@@ -53,19 +53,19 @@
         }
         .user-form-card select {
           color: #1565c0;
-          min-width: 120px;
+          min-width: 100px;
         }
         .user-form-card button {
           background: linear-gradient(90deg, #1976d2 70%, #42a5f5 100%);
           color: #fff;
           border: none;
-          border-radius: 18px;
-          padding: 13px 34px;
-          font-size: 1.05em;
+          border-radius: 14px;
+          padding: 10px 24px;
+          font-size: 1em;
           font-weight: 600;
           letter-spacing: 0.5px;
           box-shadow: 0 1.5px 8px #1565c022;
-          margin-left: 14px;
+          margin-left: 8px;
           cursor: pointer;
           transition: background 0.17s, transform 0.16s;
         }
@@ -73,12 +73,9 @@
           background: linear-gradient(90deg, #1565c0 70%, #1976d2 100%);
           transform: scale(1.04);
         }
-        @media (max-width: 600px) {
-          .user-form-card {
-            padding: 16px 7vw 16px 7vw;
-            max-width: 97vw;
-          }
-          .user-form-row { flex-direction: column; gap: 8px; }
+        @media (max-width: 900px) {
+          .user-form-row { flex-direction: column; gap: 7px; }
+          .user-form-card { padding: 12px 2vw 12px 2vw; max-width: 99vw; }
           .user-form-card button { margin-left: 0; width: 100%; }
         }
         .mensaje {
@@ -89,35 +86,219 @@
         .mensaje.error {
             color: red;
         }
+        .filtros-buscador {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 18px 20px;
+            margin: 12px 0 18px 0;
+            justify-content: flex-start;
+            width: 100%;
+        }
+        .filtros-buscador label {
+            font-weight: 600;
+            color: #1565c0;
+            margin-right: 5px;
+        }
+        .filtros-buscador select, .filtros-buscador input[type=text] {
+            border-radius: 8px;
+            border: 1.5px solid #74ebd5;
+            padding: 8px 16px;
+            font-size: 1em;
+            background: #f4fafd;
+            color: #1565c0;
+            outline: none;
+            box-shadow: 0 1px 5px #74ebd522;
+        }
+        .filtros-buscador input[type=text]:focus,
+        .filtros-buscador select:focus {
+            border-color: #1976d2;
+        }
+        .accordion-toggle-inline,
+        #openAddUserModal {
+            background: linear-gradient(90deg, #1976d2 80%, #74ebd5 140%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.09em;
+            font-weight: 700;
+            padding: 10px 24px;
+            cursor: pointer;
+            transition: background .18s, transform .12s;
+            box-shadow: 0 2px 12px #1565c022;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 41px;
+        }
+        .accordion-toggle-inline:hover,
+        #openAddUserModal:hover {
+            background: linear-gradient(90deg, #1565c0 70%, #1976d2 100%);
+            transform: scale(1.04);
+        }
+        /* Ajustes botón (ícono) */
+        .btn-ajustes {
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 1.25em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 1px 6px #1565c022;
+            transition: background .18s, transform .13s;
+        }
+        .btn-ajustes:hover {
+            background: #1565c0;
+            transform: scale(1.10) rotate(25deg);
+        }
+        /* Estado usuario */
+        .estado-habilitado {
+            color: #43a047;
+            font-weight: bold;
+        }
+        .estado-deshabilitado {
+            color: #e53935;
+            font-weight: bold;
+        }
+        /* MODAL estilos */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1100;
+            left: 0; top: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.34);
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .modal.open {
+            display: flex;
+        }
+        .modal .user-form-card, .modal .ajuste-card {
+            box-shadow: 0 6px 32px #1976d230, 0 2px 8px #1565c055;
+            margin: 0;
+            max-width: 98vw;
+            position: relative;
+        }
+        .modal .close-modal {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            font-size: 1.4em;
+            cursor: pointer;
+            color: #1565c0;
+            font-weight: bold;
+            transition: color .15s;
+        }
+        .modal .close-modal:hover { color: #e53935; }
+
+        .ajuste-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 28px 30px 24px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 270px;
+        }
+        .ajuste-card h3 {
+            color: #1565c0;
+            margin-bottom: 18px;
+        }
+        .ajuste-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+        }
+        .ajuste-btns button {
+            padding: 10px 0;
+            border-radius: 11px;
+            border: none;
+            font-size: 1.06em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background .15s, color .13s, transform .13s;
+            box-shadow: 0 2px 8px #1976d230;
+        }
+        .btn-habilitar { background: #43a047; color: #fff; }
+        .btn-habilitar:hover { background: #388e3c; transform: scale(1.05);}
+        .btn-deshabilitar-modal { background: #e53935; color: #fff; }
+        .btn-deshabilitar-modal:hover { background: #c62828; transform: scale(1.05);}
+        .btn-desbloquear { background: #1976d2; color: #fff; }
+        .btn-desbloquear:hover { background: #1565c0; transform: scale(1.05);}
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Gestión de Usuarios</h1>
         <div id="mensaje" class="mensaje"></div>
-        <!-- FORMULARIO MODERNO -->
-        <div class="user-form-card">
-          <h2>Agregar Usuario</h2>
-          <form id="formAgregarUsuario" autocomplete="off">
-            <div class="user-form-row">
-              <input type="text" id="nombre" placeholder="Nombre" required>
-              <input type="password" id="pass" placeholder="Contraseña" required>
-            </div>
-            <div class="user-form-row">
-              <input type="text" id="dni" placeholder="DNI" required>
-              <select id="id_rol" required>
-                <option value="">Seleccionar rol...</option>
-              </select>
-            </div>
-            <div class="user-form-row">
-              <select id="id_grupo" required>
-                <option value="">Seleccionar grupo...</option>
-              </select>
-              <button type="submit">Agregar Usuario</button>
-            </div>
-          </form>
+
+        <!-- Filtros, buscador y agregar usuario alineados -->
+        <div class="filtros-buscador">
+            <label for="usuariosPorPagina">Usuarios por página:</label>
+            <select id="usuariosPorPagina">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+            <label for="busquedaUsuario">Buscar usuario:</label>
+            <input type="text" id="busquedaUsuario" placeholder="Nombre, DNI, etc.">
+            <button id="openAddUserModal" type="button">
+                <span>➕ Agregar usuario</span>
+            </button>
         </div>
-        <!-- FIN FORMULARIO MODERNO -->
+
+        <!-- MODAL para agregar usuario -->
+        <div id="addUserModal" class="modal" tabindex="-1">
+          <div class="user-form-card">
+            <button type="button" class="close-modal" id="closeAddUserModal" aria-label="Cerrar">&times;</button>
+            <h2>Agregar Usuario</h2>
+            <form id="formAgregarUsuario" autocomplete="off">
+              <div class="user-form-row">
+                <input type="text" id="nombre" placeholder="Nombre" required>
+                <input type="password" id="pass" placeholder="Contraseña" required>
+              </div>
+              <div class="user-form-row">
+                <input type="text" id="dni" placeholder="DNI" required>
+                <select id="id_rol" required>
+                  <option value="">Seleccionar rol...</option>
+                </select>
+              </div>
+              <div class="user-form-row">
+                <select id="id_grupo" required>
+                  <option value="">Seleccionar grupo...</option>
+                </select>
+                <button type="submit">Agregar Usuario</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- FIN MODAL -->
+
+        <!-- MODAL AJUSTES DE USUARIO -->
+        <div id="ajusteUsuarioModal" class="modal" tabindex="-1">
+          <div class="ajuste-card">
+            <button type="button" class="close-modal" id="closeAjusteUsuarioModal" aria-label="Cerrar">&times;</button>
+            <h3>Ajustes de usuario</h3>
+            <div id="ajusteUsuarioNombre" style="color:#1976d2; margin-bottom:12px; font-weight:700;"></div>
+            <div id="ajusteUsuarioEstado" style="margin-bottom:12px;"></div>
+            <div class="ajuste-btns">
+              <button type="button" class="btn-habilitar" id="btnHabilitarUsuario">Habilitar usuario</button>
+              <button type="button" class="btn-deshabilitar-modal" id="btnDeshabilitarUsuario">Deshabilitar usuario</button>
+              <button type="button" class="btn-desbloquear" id="btnDesbloquearUsuario">Desbloquear usuario</button>
+            </div>
+          </div>
+        </div>
+        <!-- FIN MODAL AJUSTES DE USUARIO -->
 
         <!-- Tabla de usuarios -->
         <table id="usuariosTable" class="tabla">
@@ -129,14 +310,211 @@
                     <th>DNI</th>
                     <th>ID Rol</th>
                     <th>ID Grupo</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
                 <!-- Se llenará dinámicamente -->
             </tbody>
         </table>
+        <!-- Paginación -->
+        <div id="paginacion" style="margin: 18px 0 0 0; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;"></div>
     </div>
     <script>
+    // MODAL abrir/cerrar AGREGAR USUARIO
+    const openModalBtn = document.getElementById('openAddUserModal');
+    const closeModalBtn = document.getElementById('closeAddUserModal');
+    const addUserModal = document.getElementById('addUserModal');
+
+    openModalBtn.addEventListener('click', () => {
+        addUserModal.classList.add('open');
+        document.body.style.overflow = "hidden";
+        setTimeout(() => {
+          document.getElementById('nombre').focus();
+        }, 100);
+    });
+    closeModalBtn.addEventListener('click', closeAddUserModal);
+    addUserModal.addEventListener('click', e => {
+        if (e.target === addUserModal) closeAddUserModal();
+    });
+    function closeAddUserModal() {
+        addUserModal.classList.remove('open');
+        document.body.style.overflow = "";
+    }
+
+    // MODAL abrir/cerrar AJUSTES USUARIO
+    const ajusteUsuarioModal = document.getElementById('ajusteUsuarioModal');
+    const closeAjusteUsuarioModalBtn = document.getElementById('closeAjusteUsuarioModal');
+    closeAjusteUsuarioModalBtn.addEventListener('click', closeAjusteUsuarioModal);
+    ajusteUsuarioModal.addEventListener('click', e => {
+        if (e.target === ajusteUsuarioModal) closeAjusteUsuarioModal();
+    });
+    function closeAjusteUsuarioModal() {
+        ajusteUsuarioModal.classList.remove('open');
+        document.body.style.overflow = "";
+        usuarioSeleccionadoId = null;
+        usuarioSeleccionadoEstado = null;
+        usuarioSeleccionadoBloqueado = null;
+    }
+
+    // Variables para AJUSTES usuario actual
+    let usuarioSeleccionadoId = null;
+    let usuarioSeleccionadoNombre = null;
+    let usuarioSeleccionadoEstado = null;
+    let usuarioSeleccionadoBloqueado = null;
+
+    // Filtros y paginación
+    let usuarios = [];
+    let usuariosFiltrados = [];
+    let paginaActual = 1;
+    let usuariosPorPagina = 10;
+
+    function aplicarFiltrosYMostrar() {
+        const textoBusqueda = document.getElementById('busquedaUsuario').value.trim().toLowerCase();
+        usuariosFiltrados = usuarios.filter(u => {
+            return (
+                (u.nombre && u.nombre.toLowerCase().includes(textoBusqueda)) ||
+                (u.dni && u.dni.toLowerCase().includes(textoBusqueda)) ||
+                (u.id_usuario && String(u.id_usuario).includes(textoBusqueda))
+            );
+        });
+        paginaActual = 1;
+        mostrarUsuarios();
+    }
+
+    function mostrarUsuarios() {
+        usuariosPorPagina = parseInt(document.getElementById('usuariosPorPagina').value, 10) || 10;
+        const tbody = document.querySelector('#usuariosTable tbody');
+        tbody.innerHTML = '';
+        const inicio = (paginaActual - 1) * usuariosPorPagina;
+        const fin = inicio + usuariosPorPagina;
+        const paginaUsuarios = usuariosFiltrados.slice(inicio, fin);
+        paginaUsuarios.forEach(u => {
+            const estadoTexto = (u.deshabilitado
+                ? '<span class="estado-deshabilitado">Deshabilitado</span>'
+                : '<span class="estado-habilitado">Habilitado</span>');
+            const bloqueadoTexto = (u.bloqueado
+                ? '<br><span class="estado-deshabilitado">Bloqueado</span>'
+                : '');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${u.id_usuario ?? ''}</td>
+                <td>${u.nombre ?? ''}</td>
+                <td>${u.pass ?? ''}</td>
+                <td>${u.dni ?? ''}</td>
+                <td>${u.id_rol ?? ''}</td>
+                <td>${u.id_grupo ?? ''}</td>
+                <td>${estadoTexto}${bloqueadoTexto}</td>
+                <td>
+                  <button class="btn-ajustes" title="Ajustes de usuario" onclick="abrirModalAjusteUsuario(${u.id_usuario}, '${u.nombre ? u.nombre.replace(/'/g,"\\'") : ''}', ${u.deshabilitado ? 'true' : 'false'}, ${u.bloqueado ? 'true' : 'false'})">&#9881;</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+        mostrarPaginacion();
+    }
+
+    function mostrarPaginacion() {
+        const totalPaginas = Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
+        const paginacion = document.getElementById('paginacion');
+        paginacion.innerHTML = '';
+        for (let i = 1; i <= totalPaginas; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.style.padding = '7px 14px';
+            btn.style.borderRadius = '7px';
+            btn.style.border = '1.5px solid #74ebd5';
+            btn.style.margin = '0 3px';
+            btn.style.background = i === paginaActual ? '#1976d2' : '#fff';
+            btn.style.color = i === paginaActual ? '#fff' : '#1976d2';
+            btn.style.fontWeight = i === paginaActual ? '700' : '600';
+            btn.style.cursor = 'pointer';
+            btn.onclick = () => { paginaActual = i; mostrarUsuarios(); };
+            paginacion.appendChild(btn);
+        }
+    }
+
+    // Abrir modal de ajustes
+    window.abrirModalAjusteUsuario = function(id, nombre, deshabilitado, bloqueado) {
+        usuarioSeleccionadoId = id;
+        usuarioSeleccionadoNombre = nombre;
+        usuarioSeleccionadoEstado = deshabilitado;
+        usuarioSeleccionadoBloqueado = bloqueado;
+        document.getElementById('ajusteUsuarioNombre').textContent = nombre ? `Usuario: ${nombre}` : '';
+        let estadoHtml = deshabilitado
+            ? '<span class="estado-deshabilitado">Deshabilitado</span>'
+            : '<span class="estado-habilitado">Habilitado</span>';
+        estadoHtml += bloqueado
+            ? '<br><span class="estado-deshabilitado">Bloqueado</span>'
+            : '<br><span class="estado-habilitado">No bloqueado</span>';
+        document.getElementById('ajusteUsuarioEstado').innerHTML = estadoHtml;
+        ajusteUsuarioModal.classList.add('open');
+        document.body.style.overflow = "hidden";
+    }
+
+    // Botones de ajustes
+    document.getElementById('btnDeshabilitarUsuario').onclick = function() {
+        if (usuarioSeleccionadoId && confirm('¿Estás seguro de deshabilitar este usuario?')) {
+            fetch(`http://localhost:3000/api/usuarios/${usuarioSeleccionadoId}/deshabilitar`, { method: 'PUT' })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success){
+                    document.getElementById('mensaje').textContent = 'Usuario deshabilitado correctamente';
+                    document.getElementById('mensaje').className = 'mensaje';
+                    cargarUsuarios();
+                    closeAjusteUsuarioModal();
+                } else {
+                    throw new Error(data.error || 'No se pudo deshabilitar el usuario');
+                }
+            })
+            .catch(error => {
+                document.getElementById('mensaje').textContent = error.message;
+                document.getElementById('mensaje').className = 'mensaje error';
+            });
+        }
+    }
+    document.getElementById('btnHabilitarUsuario').onclick = function() {
+        if (usuarioSeleccionadoId && confirm('¿Estás seguro de habilitar este usuario?')) {
+            fetch(`http://localhost:3000/api/usuarios/${usuarioSeleccionadoId}/habilitar`, { method: 'PUT' })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success){
+                    document.getElementById('mensaje').textContent = 'Usuario habilitado correctamente';
+                    document.getElementById('mensaje').className = 'mensaje';
+                    cargarUsuarios();
+                    closeAjusteUsuarioModal();
+                } else {
+                    throw new Error(data.error || 'No se pudo habilitar el usuario');
+                }
+            })
+            .catch(error => {
+                document.getElementById('mensaje').textContent = error.message;
+                document.getElementById('mensaje').className = 'mensaje error';
+            });
+        }
+    }
+    document.getElementById('btnDesbloquearUsuario').onclick = function() {
+        if (usuarioSeleccionadoId && confirm('¿Estás seguro de desbloquear este usuario?')) {
+            fetch(`http://localhost:3000/api/usuarios/${usuarioSeleccionadoId}/desbloquear`, { method: 'PUT' })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success){
+                    document.getElementById('mensaje').textContent = 'Usuario desbloqueado correctamente';
+                    document.getElementById('mensaje').className = 'mensaje';
+                    cargarUsuarios();
+                    closeAjusteUsuarioModal();
+                } else {
+                    throw new Error(data.error || 'No se pudo desbloquear el usuario');
+                }
+            })
+            .catch(error => {
+                document.getElementById('mensaje').textContent = error.message;
+                document.getElementById('mensaje').className = 'mensaje error';
+            });
+        }
+    }
+
     // Cargar roles dinámicamente
     function cargarRoles() {
         fetch('http://localhost:3000/api/roles')
@@ -151,7 +529,6 @@
                 select.appendChild(option);
             });
         }).catch(() => {
-            // fallback si error
             const select = document.getElementById('id_rol');
             select.innerHTML = '<option value="">Seleccionar rol...</option>';
         });
@@ -171,7 +548,6 @@
                 select.appendChild(option);
             });
         }).catch(() => {
-            // fallback si error
             const select = document.getElementById('id_grupo');
             select.innerHTML = '<option value="">Seleccionar grupo...</option>';
         });
@@ -181,21 +557,9 @@
     function cargarUsuarios() {
         fetch('http://localhost:3000/api/usuarios')
             .then(res => res.json())
-            .then(usuarios => {
-                const tbody = document.querySelector('#usuariosTable tbody');
-                tbody.innerHTML = '';
-                usuarios.forEach(u => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${u.id_usuario ?? ''}</td>
-                        <td>${u.nombre ?? ''}</td>
-                        <td>${u.pass ?? ''}</td>
-                        <td>${u.dni ?? ''}</td>
-                        <td>${u.id_rol ?? ''}</td>
-                        <td>${u.id_grupo ?? ''}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+            .then(data => {
+                usuarios = Array.isArray(data) ? data : (data.usuarios || []);
+                aplicarFiltrosYMostrar();
             })
             .catch(error => {
                 document.getElementById('mensaje').textContent = 'Error al cargar usuarios';
@@ -207,6 +571,13 @@
     cargarUsuarios();
     cargarRoles();
     cargarGrupos();
+
+    // Filtrar por búsqueda
+    document.getElementById('busquedaUsuario').addEventListener('input', aplicarFiltrosYMostrar);
+    document.getElementById('usuariosPorPagina').addEventListener('change', function() {
+        paginaActual = 1;
+        mostrarUsuarios();
+    });
 
     // Función para agregar usuario
     document.getElementById('formAgregarUsuario').addEventListener('submit', function(e) {
@@ -228,6 +599,7 @@
                 document.getElementById('mensaje').textContent = 'Usuario agregado correctamente';
                 document.getElementById('mensaje').className = 'mensaje';
                 document.getElementById('formAgregarUsuario').reset();
+                closeAddUserModal();
                 cargarUsuarios();
             } else {
                 throw new Error(data.error || 'No se pudo agregar el usuario');

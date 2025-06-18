@@ -1,364 +1,387 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gestión de Roles</title>
-    <link rel="stylesheet" href="/assets/css/base.css">
-    <style>
-        body {
-            background: linear-gradient(120deg, #e3edf7 0%, #f5fafd 100%);
-            min-height: 100vh;
-        }
-        .roles-container {
-            max-width: 98vw;
-            margin: 40px auto;
-            padding: 20px 0 36px 0;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #1565c0;
-            font-size: 2.3em;
-            letter-spacing: 1px;
-        }
-        .form-rol {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto 38px auto;
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 2px 12px #1976d215;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            padding: 24px 26px 18px 26px;
-        }
-        .form-rol input, .form-rol textarea {
-            background: #f1f6fa;
-            border: none;
-            border-radius: 18px;
-            padding: 12px 18px;
-            font-size: 1em;
-            box-shadow: 0 1.5px 6px #1565c012;
-            outline: none;
-            resize: none;
-        }
-        .form-rol input:focus, .form-rol textarea:focus {
-            box-shadow: 0 0 0 2px #1976d2aa;
-            background: #e3f2fd;
-        }
-        .form-rol input {
-            flex: 1 1 150px;
-        }
-        .form-rol textarea {
-            flex: 2 1 220px;
-            min-height: 40px;
-            max-height: 75px;
-        }
-        .form-rol button {
-            background: linear-gradient(90deg, #1976d2 70%, #42a5f5 100%);
-            color: #fff;
-            border: none;
-            border-radius: 18px;
-            padding: 12px 24px;
-            font-size: 1.02em;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            box-shadow: 0 1.5px 8px #1565c022;
-            cursor: pointer;
-            transition: background 0.17s, transform 0.16s;
-        }
-        .form-rol button:hover {
-            background: linear-gradient(90deg, #1565c0 70%, #1976d2 100%);
-            transform: scale(1.04);
-        }
-        .buscador-rol {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto 36px auto;
-            display: flex;
-            align-items: center;
-            background: #fff;
-            border-radius: 24px;
-            box-shadow: 0 2px 8px #1565c021;
-            padding: 3px 15px 3px 12px;
-        }
-        .buscador-rol input {
-            border: none;
-            outline: none;
-            background: transparent;
-            font-size: 1.13em;
-            flex: 1;
-            padding: 12px 8px;
-        }
-        .buscador-rol .lupa {
-            font-size: 1.3em;
-            color: #1976d2;
-            margin-right: 7px;
-        }
-        .roles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 38px 32px;
-            width: 95%;
-            margin: 0 auto;
-            align-items: start; /* CLAVE PARA QUE CADA CARD TENGA SU ALTURA */
-        }
-        .rol-card {
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 4px 22px #1976d222, 0 1.5px 8px #3f51b529;
-            padding: 36px 38px 26px 38px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            transition: box-shadow 0.18s, transform 0.12s;
-            cursor: pointer;
-            overflow: visible;
-            min-height: 80px;
-            position: relative;
-        }
-        .rol-card.active, .rol-card:focus-within {
-            box-shadow: 0 8px 34px #1976d244;
-            transform: translateY(-2px) scale(1.03);
-        }
-        .rol-titulo {
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-bottom: 0;
-            color: #1976d2;
-            letter-spacing: 0.5px;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            cursor: pointer;
-            user-select: none;
-        }
-        .arrow {
-            margin-left: 7px;
-            font-size: 1.2em;
-            color: #1976d2;
-            transition: transform 0.18s;
-            user-select: none;
-        }
-        .rol-card .arrow {
-            transform: rotate(0deg);
-        }
-        .rol-card.active .arrow {
-            transform: rotate(90deg);
-        }
-        .rol-panel {
-            width: 100%;
-            background: #f4fafd;
-            box-shadow: 0 2px 16px #1976d215;
-            border-radius: 15px;
-            margin-top: 18px;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.25s, padding 0.25s;
-            padding: 0 0;
-            pointer-events: none;
-            display: block;
-        }
-        .rol-card.active .rol-panel {
-            max-height: 350px;
-            opacity: 1;
-            padding: 20px 18px 18px 18px;
-            pointer-events: auto;
-        }
-        .rol-panel .rol-id {
-            color: #888;
-            font-size: 1em;
-            margin-bottom: 7px;
-        }
-        .rol-panel .rol-desc {
-            color: #1976d2;
-            font-size: 1.07em;
-            font-style: italic;
-            margin-bottom: 15px;
-        }
-        .rol-panel .panel-acciones {
-            display: flex;
-            gap: 14px;
-        }
-        .rol-panel button {
-            background: #e53935;
-            color: #fff;
-            border: none;
-            border-radius: 15px;
-            padding: 10px 22px;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 1.5px 6px #e5393515;
-            transition: background .16s, transform .1s;
-        }
-        .rol-panel button:hover { background: #b71c1c; }
-        .mensaje {
-            text-align: center;
-            margin-bottom: 14px;
-            color: green;
-        }
-        .mensaje.error {
-            color: red;
-        }
-        @media (max-width: 900px) {
-            .rol-card { padding: 18px 12px 12px 12px; }
-            .rol-titulo { font-size: 1.15em; }
-            .form-rol { padding: 12px 5vw 12px 5vw; flex-direction: column; gap: 9px; }
-        }
-        @media (max-width: 600px) {
-            .roles-grid { grid-template-columns: 1fr; gap: 19px; }
-            .rol-card { padding: 11px 3vw 11px 3vw; min-height: 50px;}
-            .rol-titulo { font-size: 1em; }
-            .rol-panel { padding: 0 0; }
-            .rol-card.active .rol-panel { padding: 10px 4vw 10px 4vw; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Búsqueda y Gestión de Roles</title>
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/tablas.css">
+  <link rel="stylesheet" href="/assets/css/btn.css">
+  <style>
+    .roles-container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #fff;
+      border-radius: 22px;
+      padding: 30px 24px 22px 24px;
+      box-shadow: 0 2px 18px #1976d218, 0 1px 4px #1565c022;
+    }
+    .roles-container h1 {
+      color: #1565c0;
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.45em;
+      letter-spacing: 1px;
+    }
+    .search-role-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .search-role-row input[type="text"] {
+      border-radius: 9px;
+      border: 1.5px solid #74ebd5;
+      padding: 10px 14px;
+      font-size: 1em;
+      background: #f4fafd;
+      color: #1565c0;
+      outline: none;
+      box-shadow: 0 1px 5px #74ebd522;
+      min-width: 340px;
+      width: 340px;
+      max-width: 90vw;
+      transition: border .18s;
+    }
+    .search-role-row input[type="text"]:focus {
+      border-color: #1976d2;
+    }
+    .roles-listing {
+      margin-bottom: 18px;
+    }
+    .role-card {
+      background: #f1f6fa;
+      border-radius: 12px;
+      padding: 18px 16px 13px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 1.5px 6px #1565c012;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .role-card .role-title {
+      font-weight: 700;
+      color: #1976d2;
+      font-size: 1.13em;
+      margin-bottom: 4px;
+    }
+    .role-card .role-description {
+      color: #3a3a3a;
+      font-size: 0.98em;
+      margin-bottom: 7px;
+    }
+    .role-card .role-id {
+      color: #888;
+      font-size: 0.93em;
+      margin-bottom: 6px;
+    }
+    .role-card .btn-eliminar-rol {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: #e53935;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: .98em;
+      font-weight: bold;
+      padding: 5px 13px;
+      cursor: pointer;
+      transition: background .17s, transform .13s;
+      box-shadow: 0 1px 6px #1565c022;
+      z-index: 2;
+    }
+    .role-card .btn-eliminar-rol:hover {
+      background: #c62828;
+      transform: scale(1.08);
+    }
+    .btn-agregar-rol {
+      background: linear-gradient(90deg, #1976d2 80%, #74ebd5 140%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.07em;
+      font-weight: 700;
+      padding: 8px 18px;
+      cursor: pointer;
+      transition: background .18s, transform .13s;
+      box-shadow: 0 1.5px 8px #1565c022;
+      margin-bottom: 10px;
+    }
+    .btn-agregar-rol:hover {
+      background: linear-gradient(90deg, #1565c0 70%, #1976d2 100%);
+      transform: scale(1.04);
+    }
+    .mensaje {
+      color: #1565c0;
+      text-align: center;
+      margin-bottom: 13px;
+      font-weight: 600;
+    }
+    .mensaje.error {
+      color: #e53935;
+    }
+    /* MODAL estilos */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1100;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.34);
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal.open {
+      display: flex;
+    }
+    .modal .agregar-rol-card {
+      background: #fff;
+      border-radius: 20px;
+      max-width: 380px;
+      width: 93vw;
+      margin: 0;
+      padding: 32px 30px 22px 30px;
+      box-shadow: 0 6px 32px #1976d230, 0 2px 8px #1565c055;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      position: relative;
+      justify-content: center;
+    }
+    .modal .close-modal {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: transparent;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+      color: #1565c0;
+      font-weight: bold;
+      transition: color .15s;
+      z-index: 5;
+    }
+    .modal .close-modal:hover { color: #e53935; }
+    .modal-title {
+      color: #1565c0;
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 1.25em;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .agregar-rol-modal-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .agregar-rol-modal-row label {
+      min-width: 82px;
+      color: #1565c0;
+      font-weight: 600;
+      font-size: 1em;
+    }
+    .agregar-rol-modal-row input[type="text"] {
+      border-radius: 10px;
+      border: 1.5px solid #74ebd5;
+      padding: 10px 14px;
+      font-size: 1.05em;
+      background: #f4fafd;
+      color: #1565c0;
+      outline: none;
+      box-shadow: 0 1px 5px #74ebd522;
+      transition: border .18s;
+      flex: 1 1 0;
+    }
+    .agregar-rol-modal-row input[type="text"]:focus {
+      border-color: #1976d2;
+      background: #e3f2fd;
+    }
+    .btn-modal-agregarrol {
+      background: linear-gradient(90deg, #1976d2 80%, #42a5f5 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.13em;
+      font-weight: 700;
+      padding: 12px 0;
+      margin-top: 2px;
+      cursor: pointer;
+      transition: background .18s, transform .13s;
+      box-shadow: 0 1.5px 8px #1565c022;
+      width: 100%;
+      letter-spacing: 0.6px;
+      margin-bottom: 3px;
+    }
+    .btn-modal-agregarrol:hover {
+      background: linear-gradient(90deg, #1565c0 70%, #1976d2 100%);
+      transform: scale(1.04);
+    }
+    @media (max-width: 600px) {
+      .roles-container { padding: 11px 2vw 9px 2vw; max-width: 99vw; }
+      .search-role-row { gap: 5px; }
+      .search-role-row input[type="text"] { min-width: 160px; width: 96vw; }
+      .modal .agregar-rol-card { max-width: 97vw; padding: 14px 7px 13px 7px; }
+      .agregar-rol-modal-row label { min-width: 60px; }
+      .agregar-rol-modal-row { gap: 5px; }
+    }
+  </style>
 </head>
 <body>
-<div class="roles-container">
-    <h1>Gestión de Roles</h1>
-    <div id="mensaje" class="mensaje"></div>
-    <form class="form-rol" id="formAgregarRol" autocomplete="off">
-        <input type="text" id="nombreRol" placeholder="Nombre del rol" maxlength="40" required>
-        <textarea id="descRol" placeholder="Descripción (opcional)" maxlength="150"></textarea>
-        <button type="submit">Agregar Rol</button>
-    </form>
-    <form class="buscador-rol" onsubmit="return false;">
-        <span class="lupa">&#128269;</span>
-        <input type="text" placeholder="Buscar rol..." id="buscarRol" autocomplete="off"/>
-    </form>
-    <div class="roles-grid" id="panelRoles">
-        <!-- Paneles generados dinámicamente -->
+  <div class="roles-container">
+    <h1>Búsqueda y Gestión de Roles</h1>
+    <div id="mensajeRol" class="mensaje"></div>
+    <div class="search-role-row">
+      <input type="text" id="busquedaRol" placeholder="Buscar rol por nombre o descripción...">
+      <button class="btn-agregar-rol" id="openAddRoleModal" type="button">Agregar Rol</button>
     </div>
-</div>
-<script>
-let rolesGlobal = []; // [{id_rol, nombre, descripcion}]
+    <div class="roles-listing" id="rolesListado"></div>
+  </div>
+  <!-- MODAL para agregar rol -->
+  <div id="addRoleModal" class="modal" tabindex="-1">
+    <div class="agregar-rol-card">
+      <button type="button" class="close-modal" id="closeAddRoleModal" aria-label="Cerrar">&times;</button>
+      <h2 class="modal-title">Agregar Rol</h2>
+      <form id="formAgregarRol" autocomplete="off">
+        <div class="agregar-rol-modal-row">
+          <label for="nombreRol">Nombre:</label>
+          <input type="text" id="nombreRol" required placeholder="Nombre del rol">
+        </div>
+        <div class="agregar-rol-modal-row">
+          <label for="descRol">Descripción:</label>
+          <input type="text" id="descRol" placeholder="Descripción">
+        </div>
+        <button type="submit" class="btn-modal-agregarrol">Agregar Rol</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    let roles = [];
+    let rolesFiltrados = [];
 
-async function cargarRoles() {
-    const contenedor = document.getElementById('panelRoles');
-    contenedor.innerHTML = "<div style='text-align:center;color:#888;width:100%'>Cargando roles...</div>";
-    try {
-        const resp = await fetch('http://localhost:3000/api/roles');
-        const roles = await resp.json();
-        rolesGlobal = roles;
-        renderizarRoles(rolesGlobal, "");
-    } catch (err) {
-        contenedor.innerHTML = "<div style='text-align:center;color:red;width:100%'>Error cargando roles</div>";
-    }
-}
-
-function renderizarRoles(roles, filtro) {
-    const contenedor = document.getElementById('panelRoles');
-    contenedor.innerHTML = '';
-    let mostrarRoles = roles;
-    if (filtro && filtro.length > 0) {
-        mostrarRoles = roles.filter(r => r.nombre.toLowerCase().includes(filtro));
-    }
-    if (!mostrarRoles.length) {
-        contenedor.innerHTML = "<div style='text-align:center;color:#888;width:100%'>No se encontraron roles.</div>";
+    // Mostrar roles solo si hay resultados Y si hay texto de búsqueda
+    function mostrarRoles() {
+      const contenedor = document.getElementById('rolesListado');
+      contenedor.innerHTML = '';
+      const textoBusqueda = document.getElementById('busquedaRol').value.trim();
+      if (rolesFiltrados.length === 0 && textoBusqueda.length > 0) {
+        contenedor.innerHTML = '<div style="color:#e53935;text-align:center;font-weight:bold;">No se encontraron roles.</div>';
         return;
-    }
-    mostrarRoles.forEach((rol, idx) => {
-        const card = document.createElement('div');
-        card.className = 'rol-card';
-
-        // Título del rol
-        const titulo = document.createElement('div');
-        titulo.className = 'rol-titulo';
-        titulo.textContent = rol.nombre;
-
-        // Flecha
-        const arrow = document.createElement('span');
-        arrow.className = 'arrow';
-        arrow.innerHTML = '&#9660;';
-        titulo.appendChild(arrow);
-        card.appendChild(titulo);
-
-        // Panel expandible (NO ABSOLUTO)
-        const panel = document.createElement('div');
-        panel.className = 'rol-panel';
-        let desc = (rol.descripcion && rol.descripcion.trim().length > 0)
-            ? rol.descripcion
-            : '<span style="color:#aaa;font-style:italic;">Sin descripción</span>';
-        panel.innerHTML = `
-            <div class="rol-id">ID: ${rol.id_rol}</div>
-            <div class="rol-desc">${desc}</div>
-            <div class="panel-acciones">
-                <button class="btn-eliminar" data-id="${rol.id_rol}">Eliminar</button>
-            </div>
+      }
+      rolesFiltrados.forEach(rol => {
+        const div = document.createElement('div');
+        div.className = "role-card";
+        div.innerHTML = `
+          <span class="role-title">${rol.nombre ?? '(Sin nombre)'}</span>
+          <span class="role-description">${rol.descripcion ?? '(Sin descripción)'}</span>
+          <span class="role-id">ID Rol: ${rol.id_rol}</span>
+          <button type="button" class="btn-eliminar-rol" onclick="eliminarRol(${rol.id_rol})">Eliminar</button>
         `;
-        card.appendChild(panel);
+        contenedor.appendChild(div);
+      });
+    }
 
-        // Acordeón: abrir/cerrar solo uno (con hover)
-        card.addEventListener('mouseenter', function() {
-            document.querySelectorAll('.rol-card.active').forEach(el => el.classList.remove('active'));
-            card.classList.add('active');
+    // Buscar roles al escribir y al buscar manualmente (ya no muestra todos por defecto)
+    function buscarRoles() {
+      const texto = document.getElementById('busquedaRol').value.trim().toLowerCase();
+      if (!texto) {
+        rolesFiltrados = [];
+        mostrarRoles();
+        return;
+      }
+      // Usa el endpoint de búsqueda para eficiencia
+      fetch('http://localhost:3000/api/roles/buscar?q=' + encodeURIComponent(texto))
+        .then(res => res.json())
+        .then(data => {
+          roles = Array.isArray(data) ? data : [];
+          rolesFiltrados = roles;
+          mostrarRoles();
+        })
+        .catch(() => {
+          document.getElementById('mensajeRol').textContent = "Error al cargar roles";
+          document.getElementById('mensajeRol').className = "mensaje error";
         });
-        card.addEventListener('mouseleave', function() {
-            card.classList.remove('active');
-        });
+    }
 
-        // Eliminar rol
-        panel.querySelector('.btn-eliminar').onclick = function(e) {
-            e.stopPropagation();
-            if(confirm('¿Seguro que quieres eliminar este rol?')) {
-                fetch('http://localhost:3000/api/roles/' + rol.id_rol, { method: 'DELETE' })
-                    .then(r => r.json())
-                    .then(data => {
-                        if(data.success) {
-                            cargarRoles();
-                        } else {
-                            alert(data.error || 'No se pudo eliminar el rol');
-                        }
-                    })
-                    .catch(() => alert('Error al eliminar el rol'));
+    // Eliminar rol
+    window.eliminarRol = function(id_rol) {
+      if(confirm("¿Seguro que deseas eliminar este rol?")) {
+        fetch(`http://localhost:3000/api/roles/${id_rol}`, { method: 'DELETE' })
+          .then(res => res.json())
+          .then(data => {
+            if(data.success) {
+              document.getElementById('mensajeRol').textContent = "Rol eliminado correctamente";
+              document.getElementById('mensajeRol').className = "mensaje";
+              buscarRoles();
+            } else {
+              throw new Error(data.error || "No se pudo eliminar el rol");
             }
-        };
+          })
+          .catch(error => {
+            document.getElementById('mensajeRol').textContent = error.message;
+            document.getElementById('mensajeRol').className = "mensaje error";
+          });
+      }
+    }
 
-        contenedor.appendChild(card);
+    // MODAL abrir/cerrar AGREGAR ROL
+    const openAddRoleModalBtn = document.getElementById('openAddRoleModal');
+    const closeAddRoleModalBtn = document.getElementById('closeAddRoleModal');
+    const addRoleModal = document.getElementById('addRoleModal');
+
+    openAddRoleModalBtn.addEventListener('click', () => {
+        addRoleModal.classList.add('open');
+        document.body.style.overflow = "hidden";
+        setTimeout(() => {
+          document.getElementById('nombreRol').focus();
+        }, 100);
     });
-}
+    closeAddRoleModalBtn.addEventListener('click', closeAddRoleModal);
+    addRoleModal.addEventListener('click', e => {
+        if (e.target === addRoleModal) closeAddRoleModal();
+    });
+    function closeAddRoleModal() {
+        addRoleModal.classList.remove('open');
+        document.body.style.overflow = "";
+        document.getElementById('formAgregarRol').reset();
+    }
 
-// Buscador de roles en tiempo real
-document.getElementById('buscarRol').addEventListener('input', function() {
-    const filtro = this.value.trim().toLowerCase();
-    renderizarRoles(rolesGlobal, filtro);
-});
-
-// Alta de roles
-document.getElementById('formAgregarRol').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const nombre = document.getElementById('nombreRol').value.trim();
-    const descripcion = document.getElementById('descRol').value.trim();
-    fetch('http://localhost:3000/api/roles', {
+    // Agregar rol
+    document.getElementById('formAgregarRol').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('nombreRol').value.trim();
+      const descripcion = document.getElementById('descRol').value.trim();
+      fetch('http://localhost:3000/api/roles', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombre, descripcion })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success || data.id_rol) {
-            document.getElementById('mensaje').textContent = 'Rol agregado correctamente';
-            document.getElementById('mensaje').className = 'mensaje';
-            document.getElementById('formAgregarRol').reset();
-            cargarRoles();
-            setTimeout(()=>{ document.getElementById('mensaje').textContent=""; }, 1600);
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.id_rol) {
+          document.getElementById('mensajeRol').textContent = "Rol agregado correctamente";
+          document.getElementById('mensajeRol').className = "mensaje";
+          closeAddRoleModal();
+          buscarRoles();
         } else {
-            throw new Error(data.error || 'No se pudo agregar el rol');
+          throw new Error(data.error || 'No se pudo agregar el rol');
         }
-    })
-    .catch(error => {
-        document.getElementById('mensaje').textContent = error.message;
-        document.getElementById('mensaje').className = 'mensaje error';
+      })
+      .catch(error => {
+        document.getElementById('mensajeRol').textContent = error.message;
+        document.getElementById('mensajeRol').className = "mensaje error";
+      });
     });
-});
 
-cargarRoles();
-</script>
+    document.getElementById('busquedaRol').addEventListener('input', buscarRoles);
+
+    // No mostrar roles al cargar, solo al buscar
+    rolesFiltrados = [];
+    mostrarRoles();
+  </script>
 </body>
 </html>
