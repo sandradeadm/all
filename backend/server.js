@@ -1,6 +1,7 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
+const bcrypt = require('bcryptjs'); // Opcional: para hash seguro (recomendado)
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,12 +9,66 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 
+// AGREGADO: para que Express detecte la IP real detrás de proxies (nginx, etc.)
+app.set('trust proxy', true);
+
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'postgres',
   password: 'Lapeludita122',
   port: 5432,
+});
+
+// --- BITÁCORA: función para registrar logs ---
+async function registrarLog({
+  id_operacion,
+  id_usuario,
+  detalle = '',
+  ip = '',
+  mac = null,
+  usuario_afectado = null
+}) {
+  try {
+    await pool.query(
+      `INSERT INTO logs (id_operacion, hora_y_fecha, id_usuario, ip, mac, detalle, usuario_afectado)
+       VALUES ($1, NOW(), $2, $3, $4, $5, $6)`,
+      [id_operacion, id_usuario, ip, mac, detalle, usuario_afectado]
+    );
+  } catch (err) {
+    console.error('Error registrando log:', err);
+  }
+}
+
+// --- ENDPOINT PARA CONSULTAR LA BITÁCORA ---
+// MODIFICADO: Muestra el nombre en el campo "usuario_afectado" si es un ID, y si no, muestra el texto original
+app.get('/api/bitacora', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        l.id_log,
+        l.hora_y_fecha,
+        u.nombre AS usuario,
+        o.descripcion AS operacion,
+        l.detalle,
+        l.ip,
+        l.mac,
+        COALESCE(uaf.nombre::text, l.usuario_afectado::text) AS usuario_afectado
+      FROM logs l
+      LEFT JOIN usuarios u ON l.id_usuario = u.id_usuario
+      LEFT JOIN operaciones o ON l.id_operacion = o.id_operacion
+      LEFT JOIN usuarios uaf ON 
+        CASE 
+          WHEN l.usuario_afectado ~ '^[0-9]+$' THEN l.usuario_afectado::integer
+          ELSE NULL
+        END = uaf.id_usuario
+      ORDER BY l.hora_y_fecha DESC
+      LIMIT 100
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Listado de usuarios
@@ -26,14 +81,26 @@ app.get('/api/usuarios', async (req, res) => {
   }
 });
 
-// Agregar usuario
+// Agregar usuario (ahora sólo pueden hacerlo ADMINISTRADOR y SOPORTE)
 app.post('/api/usuarios', async (req, res) => {
-  const { nombre, pass, id_rol, id_grupo, dni } = req.body;
+  const usuario_actual = req.body && req.body.usuario_actual;
+  const { nombre, pass, id_rol, id_grupo, dni } = req.body || {};
+  if (!usuario_actual || ![1, 7].includes(Number(usuario_actual.rol))) {
+    return res.status(403).json({ error: 'No tiene permisos para agregar usuarios' });
+  }
   try {
     const result = await pool.query(
       'INSERT INTO usuarios (nombre, pass, id_rol, id_grupo, dni) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [nombre, pass, id_rol, id_grupo, dni]
     );
+    // Log: alta usuario (asumimos id_operacion=3 para "alta_usuario")
+    await registrarLog({
+      id_operacion: 3,
+      id_usuario: usuario_actual.id_usuario,
+      detalle: `El usuario ${usuario_actual.id_usuario} creó al usuario ${nombre}`,
+      ip: req.ip,
+      usuario_afectado: nombre
+    });
     res.status(201).json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -44,7 +111,7 @@ app.post('/api/usuarios', async (req, res) => {
 app.get('/api/roles/buscar', async (req, res) => {
   const { q } = req.query;
   if (!q || !q.trim()) {
-    return res.json([]); // Si no hay consulta, no devuelve nada
+    return res.json([]);
   }
   try {
     const result = await pool.query(
@@ -56,7 +123,6 @@ app.get('/api/roles/buscar', async (req, res) => {
     );
     res.json(result.rows);
   } catch (err) {
-    // Log para debug
     console.error('Error en /api/roles/buscar:', err);
     res.status(500).json({ error: err.message });
   }
@@ -104,9 +170,13 @@ app.get('/api/roles/:id_rol/usuarios', async (req, res) => {
   }
 });
 
-// Agregar un nuevo rol
+// Agregar un nuevo rol (solo ADMINISTRADOR)
 app.post('/api/roles', async (req, res) => {
-  const { nombre, descripcion } = req.body;
+  const usuario_actual = req.body && req.body.usuario_actual;
+  const { nombre, descripcion } = req.body || {};
+  if (!usuario_actual || Number(usuario_actual.rol) !== 1) {
+    return res.status(403).json({ error: 'No tiene permisos para agregar roles' });
+  }
   try {
     const result = await pool.query(
       'INSERT INTO roles (nombre, descripcion) VALUES ($1, $2) RETURNING *',
@@ -118,8 +188,12 @@ app.post('/api/roles', async (req, res) => {
   }
 });
 
-// Eliminar un rol
+// Eliminar un rol (solo ADMINISTRADOR)
 app.delete('/api/roles/:id_rol', async (req, res) => {
+  const usuario_rol = req.body && req.body.usuario_rol;
+  if (Number(usuario_rol) !== 1) {
+    return res.status(403).json({ error: 'No tiene permisos para eliminar roles' });
+  }
   const { id_rol } = req.params;
   try {
     await pool.query('DELETE FROM roles WHERE id_rol = $1', [id_rol]);
@@ -143,7 +217,7 @@ app.get('/api/grupos', async (req, res) => {
 app.get('/api/grupos/buscar', async (req, res) => {
   const { q } = req.query;
   if (!q || !q.trim()) {
-    return res.json([]); // Si no hay consulta, no devuelve nada
+    return res.json([]);
   }
   try {
     const result = await pool.query(
@@ -152,7 +226,6 @@ app.get('/api/grupos/buscar', async (req, res) => {
        ORDER BY id_grupo`,
       [`%${q.trim()}%`]
     );
-    // Trae usuarios para cada grupo encontrado
     const grupos = await Promise.all(result.rows.map(async grupo => {
       const usuarios = await pool.query(
         'SELECT id_usuario, nombre, dni FROM usuarios WHERE id_grupo = $1',
@@ -182,54 +255,86 @@ app.get('/api/grupos/:id_grupo/usuarios', async (req, res) => {
 });
 
 // --- AGREGADOS: habilitar, deshabilitar, desbloquear usuario y bloqueo por intentos ---
+// Ahora solo ADMINISTRADOR y SOPORTE pueden habilitar/deshabilitar/desbloquear
 
-// Deshabilitar usuario
 app.put('/api/usuarios/:id_usuario/deshabilitar', async (req, res) => {
+  const usuario_actual = req.body && req.body.usuario_actual;
   const { id_usuario } = req.params;
+  if (!usuario_actual || ![1,7].includes(Number(usuario_actual.rol))) {
+    return res.status(403).json({ error: 'No tiene permisos para deshabilitar usuarios' });
+  }
   try {
     await pool.query(
       'UPDATE usuarios SET deshabilitado = TRUE WHERE id_usuario = $1',
       [id_usuario]
     );
+    // Log: deshabilitar usuario (id_operacion=4 para "baja_usuario")
+    await registrarLog({
+      id_operacion: 4,
+      id_usuario: usuario_actual.id_usuario,
+      detalle: `Deshabilitó al usuario ID ${id_usuario}`,
+      ip: req.ip,
+      usuario_afectado: id_usuario
+    });
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Habilitar usuario
 app.put('/api/usuarios/:id_usuario/habilitar', async (req, res) => {
+  const usuario_actual = req.body && req.body.usuario_actual;
   const { id_usuario } = req.params;
+  if (!usuario_actual || ![1,7].includes(Number(usuario_actual.rol))) {
+    return res.status(403).json({ error: 'No tiene permisos para habilitar usuarios' });
+  }
   try {
     await pool.query(
       'UPDATE usuarios SET deshabilitado = FALSE WHERE id_usuario = $1',
       [id_usuario]
     );
+    // Log: habilitar usuario (id_operacion=8 para "edicion_usuario")
+    await registrarLog({
+      id_operacion: 8,
+      id_usuario: usuario_actual.id_usuario,
+      detalle: `Habilitó al usuario ID ${id_usuario}`,
+      ip: req.ip,
+      usuario_afectado: id_usuario
+    });
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Desbloquear usuario (resetea bloqueado e intentos)
 app.put('/api/usuarios/:id_usuario/desbloquear', async (req, res) => {
+  const usuario_actual = req.body && req.body.usuario_actual;
   const { id_usuario } = req.params;
+  if (!usuario_actual || ![1,7].includes(Number(usuario_actual.rol))) {
+    return res.status(403).json({ error: 'No tiene permisos para desbloquear usuarios' });
+  }
   try {
     await pool.query(
       'UPDATE usuarios SET bloqueado = FALSE, intentos = 0 WHERE id_usuario = $1',
       [id_usuario]
     );
+    // Log: desbloquear usuario (id_operacion=6 para "desbloqueo")
+    await registrarLog({
+      id_operacion: 6,
+      id_usuario: usuario_actual.id_usuario,
+      detalle: `Desbloqueó al usuario ID ${id_usuario}`,
+      ip: req.ip,
+      usuario_afectado: id_usuario
+    });
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-const bcrypt = require('bcryptjs'); // Opcional: para hash seguro (recomendado)
-
 // Login endpoint (POST /api/login)
 app.post('/api/login', async (req, res) => {
-  const { nombre, pass } = req.body;
+  const { nombre, pass } = req.body || {};
   try {
     const result = await pool.query('SELECT * FROM usuarios WHERE nombre = $1', [nombre]);
     if (result.rows.length === 0) {
@@ -262,6 +367,13 @@ app.post('/api/login', async (req, res) => {
         [nuevosIntentos, bloqueado, usuario.id_usuario]
       );
       if(bloqueado){
+        // Log: bloqueo (id_operacion=5 para "bloqueo")
+        await registrarLog({
+          id_operacion: 5,
+          id_usuario: usuario.id_usuario,
+          detalle: `Bloqueo automático por 3 intentos fallidos`,
+          ip: req.ip
+        });
         return res.status(403).json({ error: 'Usuario bloqueado por 3 intentos fallidos.' });
       }
       return res.status(401).json({ error: `Contraseña incorrecta. Intentos fallidos: ${nuevosIntentos}/3` });
@@ -271,6 +383,13 @@ app.post('/api/login', async (req, res) => {
         'UPDATE usuarios SET intentos = 0, bloqueado = FALSE WHERE id_usuario = $1',
         [usuario.id_usuario]
       );
+      // Log: login (id_operacion=1 para "login")
+      await registrarLog({
+        id_operacion: 1,
+        id_usuario: usuario.id_usuario,
+        detalle: `El usuario ${usuario.nombre} inició sesión.`,
+        ip: req.ip
+      });
       res.json({ success: true, usuario: { id: usuario.id_usuario, nombre: usuario.nombre, rol: usuario.id_rol } });
     }
   } catch (err) {

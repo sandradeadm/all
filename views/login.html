@@ -173,7 +173,15 @@
       });
       const data = await res.json();
       if(data.success){
-        localStorage.setItem('usuario', JSON.stringify(data.usuario));
+        // GUARDA id_usuario, rol Y nombre EN EL LOCALSTORAGE
+        let id_usuario = data.usuario.id_usuario || data.usuario.id;
+        let rol = data.usuario.rol || data.usuario.id_rol;
+        let nombreUsuario = data.usuario.nombre || nombre; // usa el nombre que llega del backend o el que se ingresó
+        localStorage.setItem('usuario', JSON.stringify({
+          id_usuario: Number(id_usuario),
+          rol: Number(rol),
+          nombre: nombreUsuario
+        }));
         window.location.href = '../index.html';
       }else{
         msj.textContent = data.error || "Error de autenticación";

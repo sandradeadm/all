@@ -322,6 +322,16 @@
         <div id="paginacion" style="margin: 18px 0 0 0; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;"></div>
     </div>
     <script>
+    // AGREGADO: función para obtener usuario_actual de localStorage (debe ir al principio del script)
+    function getUsuarioActual() {
+        const usuario = JSON.parse(localStorage.getItem("usuario"));
+        if (usuario && usuario.id_usuario && usuario.rol) {
+            usuario.rol = Number(usuario.rol);
+            return usuario;
+        }
+        return null;
+    }
+
     // MODAL abrir/cerrar AGREGAR USUARIO
     const openModalBtn = document.getElementById('openAddUserModal');
     const closeModalBtn = document.getElementById('closeAddUserModal');
@@ -453,10 +463,20 @@
         document.body.style.overflow = "hidden";
     }
 
-    // Botones de ajustes
+    // BOTONES DE AJUSTES MODIFICADOS PARA ENVIAR usuario_actual
     document.getElementById('btnDeshabilitarUsuario').onclick = function() {
         if (usuarioSeleccionadoId && confirm('¿Estás seguro de deshabilitar este usuario?')) {
-            fetch(`http://localhost:3000/api/usuarios/${usuarioSeleccionadoId}/deshabilitar`, { method: 'PUT' })
+            const usuario_actual = getUsuarioActual();
+            if (!usuario_actual) {
+                document.getElementById('mensaje').textContent = "Debe iniciar sesión como administrador o soporte.";
+                document.getElementById('mensaje').className = 'mensaje error';
+                return;
+            }
+            fetch(`http://localhost:3000/api/usuarios/${usuarioSeleccionadoId}/deshabilitar`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario_actual })
+            })
             .then(res => res.json())
             .then(data => {
                 if(data.success){
@@ -476,7 +496,17 @@
     }
     document.getElementById('btnHabilitarUsuario').onclick = function() {
         if (usuarioSeleccionadoId && confirm('¿Estás seguro de habilitar este usuario?')) {
-            fetch(`http://localhost:3000/api/usuarios/${usuarioSeleccionadoId}/habilitar`, { method: 'PUT' })
+            const usuario_actual = getUsuarioActual();
+            if (!usuario_actual) {
+                document.getElementById('mensaje').textContent = "Debe iniciar sesión como administrador o soporte.";
+                document.getElementById('mensaje').className = 'mensaje error';
+                return;
+            }
+            fetch(`http://localhost:3000/api/usuarios/${usuarioSeleccionadoId}/habilitar`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario_actual })
+            })
             .then(res => res.json())
             .then(data => {
                 if(data.success){
@@ -496,7 +526,17 @@
     }
     document.getElementById('btnDesbloquearUsuario').onclick = function() {
         if (usuarioSeleccionadoId && confirm('¿Estás seguro de desbloquear este usuario?')) {
-            fetch(`http://localhost:3000/api/usuarios/${usuarioSeleccionadoId}/desbloquear`, { method: 'PUT' })
+            const usuario_actual = getUsuarioActual();
+            if (!usuario_actual) {
+                document.getElementById('mensaje').textContent = "Debe iniciar sesión como administrador o soporte.";
+                document.getElementById('mensaje').className = 'mensaje error';
+                return;
+            }
+            fetch(`http://localhost:3000/api/usuarios/${usuarioSeleccionadoId}/desbloquear`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario_actual })
+            })
             .then(res => res.json())
             .then(data => {
                 if(data.success){
@@ -579,7 +619,7 @@
         mostrarUsuarios();
     });
 
-    // Función para agregar usuario
+    // Función para agregar usuario (CAMBIO: ahora envía usuario_actual)
     document.getElementById('formAgregarUsuario').addEventListener('submit', function(e) {
         e.preventDefault();
         const nombre = document.getElementById('nombre').value.trim();
@@ -588,10 +628,28 @@
         const id_rol = parseInt(document.getElementById('id_rol').value, 10);
         const id_grupo = parseInt(document.getElementById('id_grupo').value, 10);
 
+        // Tomar usuario del localStorage para enviar usuario_actual
+        const usuario_actual = JSON.parse(localStorage.getItem("usuario"));
+        if (!usuario_actual || !usuario_actual.id_usuario || !usuario_actual.rol) {
+            document.getElementById('mensaje').textContent = "Debe iniciar sesión como administrador o soporte.";
+            document.getElementById('mensaje').className = 'mensaje error';
+            return;
+        }
+
         fetch('http://localhost:3000/api/usuarios', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre, pass, id_rol, id_grupo, dni })
+            body: JSON.stringify({
+                nombre,
+                pass,
+                id_rol,
+                id_grupo,
+                dni,
+                usuario_actual: {
+                    id_usuario: usuario_actual.id_usuario,
+                    rol: Number(usuario_actual.rol)
+                }
+            })
         })
         .then(res => res.json())
         .then(data => {
@@ -610,6 +668,7 @@
             document.getElementById('mensaje').className = 'mensaje error';
         });
     });
+
     </script>
 </body>
 </html>

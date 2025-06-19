@@ -93,7 +93,8 @@
                 </div>
             </div>
         </ul>
-        <ul>
+        <!-- Menú de administración solo para admin y soporte -->
+        <ul id="menu-admin">
             <li><a href="#">Administración del usuarios</a></li>
             <div class="megamenu">
                 <div class="columna-menu">
@@ -133,11 +134,17 @@
     <script>
       // Mostrar nombre del usuario logueado
       const usuario = JSON.parse(localStorage.getItem('usuario'));
+      let saludo = "Hola, usuario";
       if (usuario && usuario.nombre) {
-        document.getElementById('user-greeting').textContent = `Hola, @${usuario.nombre}`;
-      } else {
-        document.getElementById('user-greeting').textContent = "Hola, usuario";
+        saludo = `Hola, @${usuario.nombre}`;
       }
+      document.getElementById('user-greeting').textContent = saludo;
+
+      // OCULTAR menú administración si no es admin (1) ni soporte (7)
+      if (usuario && ![1,7].includes(Number(usuario.rol))) {
+        document.getElementById('menu-admin').style.display = 'none';
+      }
+
       // Cerrar sesión
       document.getElementById('logoutBtn').addEventListener('click', function() {
         localStorage.removeItem('usuario');
