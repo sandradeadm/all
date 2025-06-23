@@ -322,7 +322,7 @@
         <div id="paginacion" style="margin: 18px 0 0 0; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;"></div>
     </div>
     <script>
-    // AGREGADO: función para obtener usuario_actual de localStorage (debe ir al principio del script)
+    // función para obtener usuario_actual de localStorage
     function getUsuarioActual() {
         const usuario = JSON.parse(localStorage.getItem("usuario"));
         if (usuario && usuario.id_usuario && usuario.rol) {
@@ -463,7 +463,7 @@
         document.body.style.overflow = "hidden";
     }
 
-    // BOTONES DE AJUSTES MODIFICADOS PARA ENVIAR usuario_actual
+    // BOTONES DE AJUSTES 
     document.getElementById('btnDeshabilitarUsuario').onclick = function() {
         if (usuarioSeleccionadoId && confirm('¿Estás seguro de deshabilitar este usuario?')) {
             const usuario_actual = getUsuarioActual();
@@ -619,7 +619,7 @@
         mostrarUsuarios();
     });
 
-    // Función para agregar usuario (CAMBIO: ahora envía usuario_actual)
+    // Función para agregar usuario 
     document.getElementById('formAgregarUsuario').addEventListener('submit', function(e) {
         e.preventDefault();
         const nombre = document.getElementById('nombre').value.trim();
