@@ -1,15 +1,13 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
-const bcrypt = require('bcryptjs'); // Opcional: para hash seguro (recomendado)
+const bcrypt = require('bcryptjs'); // Opcional
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors());
-
-// AGREGADO: para que Express detecte la IP real detrás de proxies (nginx, etc.)
 app.set('trust proxy', true);
 
 const pool = new Pool({
@@ -40,8 +38,67 @@ async function registrarLog({
   }
 }
 
+// --- ENDPOINT PARA REGISTRAR VISUALIZACIÓN DE CONTRASEÑA ---
+app.post('/api/logs/ver_clave', async (req, res) => {
+  const { admin, usuario_afectado } = req.body || {};
+  if (!admin || !usuario_afectado) {
+    return res.status(400).json({ error: 'Datos incompletos para log de ver clave' });
+  }
+  try {
+    // id_operacion=12 para "visualizacion_clave"
+    await registrarLog({
+      id_operacion: 12,
+      id_usuario: admin.id_usuario,
+      detalle: `El usuario ${admin.nombre} (ID ${admin.id_usuario}) visualizó la contraseña de ${usuario_afectado.nombre} (ID ${usuario_afectado.id_usuario})`,
+      ip: req.ip,
+      usuario_afectado: usuario_afectado.id_usuario
+    });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- NUEVO ENDPOINT PARA LOGUEAR ACCESO A APARTADOS ---
+app.post('/api/logs/acceso', async (req, res) => {
+  const { usuario_actual, apartado } = req.body || {};
+  if (!usuario_actual || !apartado) {
+    return res.status(400).json({ error: 'Datos incompletos' });
+  }
+  try {
+    // id_operacion=11 para "acceso_apartado"
+    await registrarLog({
+      id_operacion: 11, 
+      id_usuario: usuario_actual.id_usuario,
+      detalle: `Ingresó al apartado "${apartado}"`,
+      ip: req.ip
+    });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- ENDPOINT PARA LOGUEAR LOGOUT ---
+app.post('/api/logout', async (req, res) => {
+  const { usuario_actual } = req.body || {};
+  if (!usuario_actual) {
+    return res.status(400).json({ error: 'Faltan datos para logout' });
+  }
+  try {
+    await registrarLog({
+      id_operacion: 2, // logout
+      id_usuario: usuario_actual.id_usuario,
+      detalle: `El usuario ${usuario_actual.nombre || usuario_actual.id_usuario} cerró sesión.`,
+      ip: req.ip
+    });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // --- ENDPOINT PARA CONSULTAR LA BITÁCORA ---
-// MODIFICADO: Muestra el nombre en el campo "usuario_afectado" si es un ID, y si no, muestra el texto original
 app.get('/api/bitacora', async (req, res) => {
   try {
     const result = await pool.query(`
@@ -93,7 +150,6 @@ app.post('/api/usuarios', async (req, res) => {
       'INSERT INTO usuarios (nombre, pass, id_rol, id_grupo, dni) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [nombre, pass, id_rol, id_grupo, dni]
     );
-    // Log: alta usuario (asumimos id_operacion=3 para "alta_usuario")
     await registrarLog({
       id_operacion: 3,
       id_usuario: usuario_actual.id_usuario,
@@ -128,7 +184,7 @@ app.get('/api/roles/buscar', async (req, res) => {
   }
 });
 
-// Listar todos los roles (no se usa para buscar)
+// Listar todos los roles
 app.get('/api/roles', async (req, res) => {
   try {
     const result = await pool.query('SELECT id_rol, nombre, descripcion FROM roles ORDER BY id_rol');
@@ -213,7 +269,7 @@ app.get('/api/grupos', async (req, res) => {
   }
 });
 
-// NUEVO: Buscador de grupos por nombre (solo consulta, sin altas/bajas)
+// NUEVO: Buscador de grupos por nombre
 app.get('/api/grupos/buscar', async (req, res) => {
   const { q } = req.query;
   if (!q || !q.trim()) {
@@ -255,8 +311,6 @@ app.get('/api/grupos/:id_grupo/usuarios', async (req, res) => {
 });
 
 // --- AGREGADOS: habilitar, deshabilitar, desbloquear usuario y bloqueo por intentos ---
-// Ahora solo ADMINISTRADOR y SOPORTE pueden habilitar/deshabilitar/desbloquear
-
 app.put('/api/usuarios/:id_usuario/deshabilitar', async (req, res) => {
   const usuario_actual = req.body && req.body.usuario_actual;
   const { id_usuario } = req.params;
@@ -268,7 +322,6 @@ app.put('/api/usuarios/:id_usuario/deshabilitar', async (req, res) => {
       'UPDATE usuarios SET deshabilitado = TRUE WHERE id_usuario = $1',
       [id_usuario]
     );
-    // Log: deshabilitar usuario (id_operacion=4 para "baja_usuario")
     await registrarLog({
       id_operacion: 4,
       id_usuario: usuario_actual.id_usuario,
@@ -293,7 +346,6 @@ app.put('/api/usuarios/:id_usuario/habilitar', async (req, res) => {
       'UPDATE usuarios SET deshabilitado = FALSE WHERE id_usuario = $1',
       [id_usuario]
     );
-    // Log: habilitar usuario (id_operacion=8 para "edicion_usuario")
     await registrarLog({
       id_operacion: 8,
       id_usuario: usuario_actual.id_usuario,
@@ -318,7 +370,6 @@ app.put('/api/usuarios/:id_usuario/desbloquear', async (req, res) => {
       'UPDATE usuarios SET bloqueado = FALSE, intentos = 0 WHERE id_usuario = $1',
       [id_usuario]
     );
-    // Log: desbloquear usuario (id_operacion=6 para "desbloqueo")
     await registrarLog({
       id_operacion: 6,
       id_usuario: usuario_actual.id_usuario,
@@ -342,7 +393,6 @@ app.post('/api/login', async (req, res) => {
     }
     const usuario = result.rows[0];
 
-    // --- Bloqueos/Deshabilitado ---
     if (usuario.deshabilitado) {
       return res.status(403).json({ error: 'Usuario deshabilitado. Contacte al administrador.' });
     }
@@ -350,13 +400,10 @@ app.post('/api/login', async (req, res) => {
       return res.status(403).json({ error: 'Usuario bloqueado por intentos fallidos. Contacte al administrador.' });
     }
 
-    // Si usas bcrypt para el hash:
     // const passwordCorrect = await bcrypt.compare(pass, usuario.pass);
-    // Si no usas hash (NO recomendado en producción):
     const passwordCorrect = pass === usuario.pass;
 
     if (!passwordCorrect) {
-      // Suma intento
       let nuevosIntentos = (usuario.intentos || 0) + 1;
       let bloqueado = false;
       if(nuevosIntentos >= 3) {
@@ -367,7 +414,6 @@ app.post('/api/login', async (req, res) => {
         [nuevosIntentos, bloqueado, usuario.id_usuario]
       );
       if(bloqueado){
-        // Log: bloqueo (id_operacion=5 para "bloqueo")
         await registrarLog({
           id_operacion: 5,
           id_usuario: usuario.id_usuario,
@@ -378,19 +424,17 @@ app.post('/api/login', async (req, res) => {
       }
       return res.status(401).json({ error: `Contraseña incorrecta. Intentos fallidos: ${nuevosIntentos}/3` });
     } else {
-      // Ok, login exitoso: resetea intentos y desbloqueado si estaba
       await pool.query(
         'UPDATE usuarios SET intentos = 0, bloqueado = FALSE WHERE id_usuario = $1',
         [usuario.id_usuario]
       );
-      // Log: login (id_operacion=1 para "login")
       await registrarLog({
         id_operacion: 1,
         id_usuario: usuario.id_usuario,
         detalle: `El usuario ${usuario.nombre} inició sesión.`,
         ip: req.ip
       });
-      res.json({ success: true, usuario: { id: usuario.id_usuario, nombre: usuario.nombre, rol: usuario.id_rol } });
+      res.json({ success: true, usuario: { id_usuario: usuario.id_usuario, nombre: usuario.nombre, rol: usuario.id_rol } });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });

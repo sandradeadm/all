@@ -64,7 +64,7 @@
             </div>
         </div>
         <!--  Nav  -->
-        <h1>Sistema de Administación de Alumnos</h1>
+        <h1>Sistema de Administración de Alumnos</h1>
         <button id="menu-toggle" class="menu-btn">☰</button>
         
         <!-- Usuario derecha -->
@@ -145,11 +145,69 @@
         document.getElementById('menu-admin').style.display = 'none';
       }
 
-      // Cerrar sesión
+      // Cerrar sesión con registro en bitácora
       document.getElementById('logoutBtn').addEventListener('click', function() {
-        localStorage.removeItem('usuario');
-        window.location.href = 'views/login.html';
+        const usuario_actual = JSON.parse(localStorage.getItem('usuario'));
+        if (usuario_actual) {
+          fetch('http://localhost:3000/api/logout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario_actual })
+          }).finally(() => {
+            localStorage.removeItem('usuario');
+            window.location.href = 'views/login.html';
+          });
+        } else {
+          localStorage.removeItem('usuario');
+          window.location.href = 'views/login.html';
+        }
       });
+
+      // ------------ REGISTRO DE ACCESO A APARTADOS --------------
+      function registrarAccesoApartado(apartado) {
+        const usuario_actual = JSON.parse(localStorage.getItem('usuario'));
+        if (!usuario_actual) return;
+        fetch('http://localhost:3000/api/logs/acceso', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usuario_actual, apartado })
+        });
+      }
+
+      // Modifica la función cargarVista para registrar acceso según el apartado
+      function cargarVista(archivo) {
+        const iframe = document.getElementById('contenido');
+        iframe.src = 'views/' + archivo;
+
+        // Registrar acceso a los apartados relevantes
+        switch (archivo) {
+          case 'bienvenida.html':
+            registrarAccesoApartado('Inicio');
+            break;
+          case 'menu-alumnos.html':
+            registrarAccesoApartado('Oficina de Alumnos');
+            break;
+          case 'cursos.html':
+            registrarAccesoApartado('Cursos');
+            break;
+          case 'materiasPlanes.html':
+            registrarAccesoApartado('Materias');
+            break;
+          case 'usuarios.html':
+            registrarAccesoApartado('Usuarios');
+            break;
+          case 'roles.html':
+            registrarAccesoApartado('Roles');
+            break;
+          case 'grupos.html':
+            registrarAccesoApartado('Grupos');
+            break;
+          case 'log.html':
+            registrarAccesoApartado('Bitácora');
+            break;
+          // Si quieres agregar otros apartados, agrega más casos aquí
+        }
+      }
     </script>
 </body>
 </html>

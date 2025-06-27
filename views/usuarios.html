@@ -136,27 +136,42 @@
             background: linear-gradient(90deg, #1565c0 70%, #1976d2 100%);
             transform: scale(1.04);
         }
-        /* Ajustes botón (ícono) */
+        .btn-ver-pass,
         .btn-ajustes {
-            background: #1976d2;
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            font-size: 1.25em;
-            display: flex;
+            background: none !important;
+            border: none !important;
+            cursor: pointer;
+            padding: 0;
+            margin: 0 2px;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 1px 6px #1565c022;
-            transition: background .18s, transform .13s;
+            box-shadow: none;
         }
-        .btn-ajustes:hover {
-            background: #1565c0;
-            transform: scale(1.10) rotate(25deg);
+        .btn-ver-pass svg, .btn-ajustes svg {
+            width: 18px;
+            height: 18px;
+            fill: #1976d2;
+            transition: fill 0.17s, background 0.2s;
         }
-        /* Estado usuario */
+        .btn-ver-pass:hover svg, .btn-ver-pass:focus svg {
+            fill: #1565c0;
+            background: none;
+        }
+        .btn-ajustes:hover svg, .btn-ajustes:focus svg {
+            fill: #1565c0;
+            background: none;
+        }
+        .btn-ver-pass:focus,
+        .btn-ajustes:focus {
+            outline: none;
+        }
+        .oculto {
+            letter-spacing: 3px;
+            font-size: 1.09em;
+        }
         .estado-habilitado {
             color: #43a047;
             font-weight: bold;
@@ -165,7 +180,6 @@
             color: #e53935;
             font-weight: bold;
         }
-        /* MODAL estilos */
         .modal {
             display: none;
             position: fixed;
@@ -198,7 +212,6 @@
             transition: color .15s;
         }
         .modal .close-modal:hover { color: #e53935; }
-
         .ajuste-card {
             background: #fff;
             border-radius: 18px;
@@ -234,14 +247,152 @@
         .btn-deshabilitar-modal:hover { background: #c62828; transform: scale(1.05);}
         .btn-desbloquear { background: #1976d2; color: #fff; }
         .btn-desbloquear:hover { background: #1565c0; transform: scale(1.05);}
+        .modal-credenciales {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.22);
+            align-items: center; justify-content: center;
+            z-index: 1200;
+        }
+        .modal-credenciales.open {
+            display: flex;
+        }
+        .cred-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 26px #1976d230, 0 1.5px 8px #1565c022;
+            padding: 34px 34px 26px 34px;
+            min-width: 320px;
+            max-width: 94vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            gap: 14px;
+            animation: credModalIn .24s cubic-bezier(.6,1.6,.6,1) both;
+            overflow: visible;
+        }
+        @keyframes credModalIn {
+            from { opacity: 0; transform: scale(.9);}
+            to { opacity: 1; transform: scale(1);}
+        }
+        .cred-card .close-modal {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            background: #fff;
+            border: 2px solid #1976d2;
+            border-radius: 50%;
+            font-size: 1.7em;
+            color: #1976d2;
+            cursor: pointer;
+            transition: color .13s, background .13s, border .13s;
+            z-index: 3;
+            width: 40px;
+            height: 40px;
+            line-height: 36px;
+            text-align: center;
+            box-shadow: 0 2px 8px #1565c044;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .cred-card .close-modal:hover {
+            background: #e53935;
+            color: #fff;
+            border-color: #e53935;
+        }
+        .cred-titulo {
+            width: 100%;
+            text-align: center;
+            margin-top: 16px;
+            margin-bottom: 2px;
+            font-size: 1.18em;
+        }
+        .cred-card .cred-fields {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 8px;
+        }
+        .cred-card label {
+            color: #1565c0;
+            font-weight: 600;
+            margin-bottom: 2px;
+            display: block;
+            text-align: left;
+        }
+        .cred-card input {
+            padding: 9px 14px;
+            font-size: 1em;
+            border-radius: 10px;
+            border: 1.5px solid #a8b8d8;
+            background: #f6fafd;
+            transition: border .16s, background .13s;
+            width: 220px;
+            margin-bottom: 2px;
+        }
+        .cred-card input:focus {
+            border: 1.5px solid #1976d2;
+            background: #e3f2fd;
+            outline: none;
+        }
+        .cred-card .cred-btns {
+            margin-top: 10px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            width: 100%;
+        }
+        .cred-card button {
+            background: linear-gradient(90deg, #1976d2 70%, #42a5f5 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 8px 20px;
+            font-size: 1em;
+            font-weight: 700;
+            letter-spacing: .5px;
+            cursor: pointer;
+            box-shadow: 0 1.5px 8px #1565c022;
+            transition: background 0.15s;
+        }
+        .cred-card button:hover {
+            background: linear-gradient(90deg, #1565c0 70%, #1976d2 100%);
+        }
+        .cred-card .cred-error {
+            color: #e53935;
+            text-align: center;
+            font-size: .99em;
+            margin-bottom: 0;
+        }
+        @media (max-width: 600px) {
+            .cred-card {
+                min-width: 220px;
+                padding: 24px 6vw 18px 6vw;
+            }
+            .cred-card .close-modal {
+                top: -15px;
+                right: -12px;
+                width: 32px;
+                height: 32px;
+                font-size: 1.2em;
+                line-height: 28px;
+            }
+            .cred-titulo {
+                margin-top: 12px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Gestión de Usuarios</h1>
         <div id="mensaje" class="mensaje"></div>
-
-        <!-- Filtros, buscador y agregar usuario alineados -->
         <div class="filtros-buscador">
             <label for="usuariosPorPagina">Usuarios por página:</label>
             <select id="usuariosPorPagina">
@@ -256,8 +407,6 @@
                 <span>➕ Agregar usuario</span>
             </button>
         </div>
-
-        <!-- MODAL para agregar usuario -->
         <div id="addUserModal" class="modal" tabindex="-1">
           <div class="user-form-card">
             <button type="button" class="close-modal" id="closeAddUserModal" aria-label="Cerrar">&times;</button>
@@ -282,9 +431,6 @@
             </form>
           </div>
         </div>
-        <!-- FIN MODAL -->
-
-        <!-- MODAL AJUSTES DE USUARIO -->
         <div id="ajusteUsuarioModal" class="modal" tabindex="-1">
           <div class="ajuste-card">
             <button type="button" class="close-modal" id="closeAjusteUsuarioModal" aria-label="Cerrar">&times;</button>
@@ -298,9 +444,27 @@
             </div>
           </div>
         </div>
-        <!-- FIN MODAL AJUSTES DE USUARIO -->
-
-        <!-- Tabla de usuarios -->
+        <div id="modalCredenciales" class="modal-credenciales" tabindex="-1">
+            <form id="formCredenciales" class="cred-card" autocomplete="off" onsubmit="return false;">
+                <button type="button" class="close-modal" id="cerrarCredenciales" aria-label="Cerrar">&times;</button>
+                <h3 class="cred-titulo">Ver contraseña <span style="font-weight:400;font-size:.97em;color:#888;">(admin)</span></h3>
+                <div class="cred-fields">
+                  <div>
+                    <label for="inputUsuario">Usuario administrador:</label>
+                    <input type="text" id="inputUsuario" autocomplete="username" required />
+                  </div>
+                  <div>
+                    <label for="inputPass">Contraseña:</label>
+                    <input type="password" id="inputPass" autocomplete="current-password" required />
+                  </div>
+                </div>
+                <div id="credError" class="cred-error"></div>
+                <div class="cred-btns">
+                    <button type="submit" id="btnVerClave">Ver</button>
+                    <button type="button" id="btnCancelarCredenciales">Cancelar</button>
+                </div>
+            </form>
+        </div>
         <table id="usuariosTable" class="tabla">
             <thead>
                 <tr>
@@ -315,14 +479,11 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Se llenará dinámicamente -->
             </tbody>
         </table>
-        <!-- Paginación -->
         <div id="paginacion" style="margin: 18px 0 0 0; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;"></div>
     </div>
     <script>
-    // función para obtener usuario_actual de localStorage
     function getUsuarioActual() {
         const usuario = JSON.parse(localStorage.getItem("usuario"));
         if (usuario && usuario.id_usuario && usuario.rol) {
@@ -331,12 +492,9 @@
         }
         return null;
     }
-
-    // MODAL abrir/cerrar AGREGAR USUARIO
     const openModalBtn = document.getElementById('openAddUserModal');
     const closeModalBtn = document.getElementById('closeAddUserModal');
     const addUserModal = document.getElementById('addUserModal');
-
     openModalBtn.addEventListener('click', () => {
         addUserModal.classList.add('open');
         document.body.style.overflow = "hidden";
@@ -352,8 +510,6 @@
         addUserModal.classList.remove('open');
         document.body.style.overflow = "";
     }
-
-    // MODAL abrir/cerrar AJUSTES USUARIO
     const ajusteUsuarioModal = document.getElementById('ajusteUsuarioModal');
     const closeAjusteUsuarioModalBtn = document.getElementById('closeAjusteUsuarioModal');
     closeAjusteUsuarioModalBtn.addEventListener('click', closeAjusteUsuarioModal);
@@ -367,19 +523,86 @@
         usuarioSeleccionadoEstado = null;
         usuarioSeleccionadoBloqueado = null;
     }
-
-    // Variables para AJUSTES usuario actual
+    let passToReveal = null, spanIdToReveal = null, claveTimeout = null;
+    function abrirModalCredenciales(passId, spanId) {
+        passToReveal = passId;
+        spanIdToReveal = spanId;
+        document.getElementById('inputUsuario').value = '';
+        document.getElementById('inputPass').value = '';
+        document.getElementById('credError').textContent = '';
+        document.getElementById('modalCredenciales').classList.add('open');
+        setTimeout(() => { document.getElementById('inputUsuario').focus(); }, 110);
+    }
+    function cerrarModalCredenciales() {
+        document.getElementById('modalCredenciales').classList.remove('open');
+        passToReveal = null;
+        spanIdToReveal = null;
+    }
+    document.getElementById('cerrarCredenciales').onclick = cerrarModalCredenciales;
+    document.getElementById('btnCancelarCredenciales').onclick = cerrarModalCredenciales;
+    document.getElementById('formCredenciales').onsubmit = function(e) {
+        e.preventDefault();
+        const usuarioAdmin = document.getElementById('inputUsuario').value.trim();
+        const passAdmin = document.getElementById('inputPass').value.trim();
+        const err = document.getElementById('credError');
+        err.textContent = '';
+        if (!usuarioAdmin || !passAdmin) {
+            err.textContent = 'Complete ambos campos.';
+            return false;
+        }
+        fetch('http://localhost:3000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre: usuarioAdmin, pass: passAdmin })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.success && data.usuario && Number(data.usuario.rol) === 1) {
+                fetch('http://localhost:3000/api/usuarios')
+                  .then(res => res.json())
+                  .then(usuarios => {
+                    const user = usuarios.find(u => String(u.id_usuario) === String(passToReveal));
+                    if (user) {
+                        document.getElementById(spanIdToReveal).textContent = user.pass;
+                        cerrarModalCredenciales();
+                        clearTimeout(claveTimeout);
+                        claveTimeout = setTimeout(() => {
+                            document.getElementById(spanIdToReveal).textContent = '••••••';
+                        }, 6000);
+                        // REGISTRAR EN BITÁCORA LA VISUALIZACIÓN DE CONTRASEÑA
+                        fetch('http://localhost:3000/api/logs/ver_clave', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                admin: {
+                                    id_usuario: data.usuario.id_usuario,
+                                    nombre: data.usuario.nombre
+                                },
+                                usuario_afectado: {
+                                    id_usuario: user.id_usuario,
+                                    nombre: user.nombre
+                                }
+                            })
+                        });
+                    } else {
+                        err.textContent = "Usuario no encontrado.";
+                    }
+                  });
+            } else {
+                err.textContent = 'Credenciales incorrectas o no es administrador.';
+            }
+        })
+        .catch(() => { err.textContent = 'Error verificando usuario administrador.'; });
+        return false;
+    };
     let usuarioSeleccionadoId = null;
     let usuarioSeleccionadoNombre = null;
     let usuarioSeleccionadoEstado = null;
     let usuarioSeleccionadoBloqueado = null;
-
-    // Filtros y paginación
     let usuarios = [];
     let usuariosFiltrados = [];
     let paginaActual = 1;
     let usuariosPorPagina = 10;
-
     function aplicarFiltrosYMostrar() {
         const textoBusqueda = document.getElementById('busquedaUsuario').value.trim().toLowerCase();
         usuariosFiltrados = usuarios.filter(u => {
@@ -392,7 +615,6 @@
         paginaActual = 1;
         mostrarUsuarios();
     }
-
     function mostrarUsuarios() {
         usuariosPorPagina = parseInt(document.getElementById('usuariosPorPagina').value, 10) || 10;
         const tbody = document.querySelector('#usuariosTable tbody');
@@ -407,28 +629,37 @@
             const bloqueadoTexto = (u.bloqueado
                 ? '<br><span class="estado-deshabilitado">Bloqueado</span>'
                 : '');
+            const passId = `pass-${u.id_usuario}`;
+            const passHtml = `
+                <span id="${passId}" class="oculto">••••••</span>
+                <button class="btn-ver-pass" title="Ver contraseña" onclick="abrirModalCredenciales('${u.id_usuario}', '${passId}')">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4C6.5 4 2 8.5 2 12s4.5 8 10 8 10-4.5 10-8-4.5-8-10-8zm0 14c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm0-12c-2.2 0-4 1.8-4 4 0 2.2 1.8 4 4 4s4-1.8 4-4c0-2.2-1.8-4-4-4zm0 6.5A2.5 2.5 0 1 1 14.5 12 2.5 2.5 0 0 1 12 14.5z"/></svg>
+                </button>
+            `;
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${u.id_usuario ?? ''}</td>
                 <td>${u.nombre ?? ''}</td>
-                <td>${u.pass ?? ''}</td>
+                <td>${passHtml}</td>
                 <td>${u.dni ?? ''}</td>
                 <td>${u.id_rol ?? ''}</td>
                 <td>${u.id_grupo ?? ''}</td>
                 <td>${estadoTexto}${bloqueadoTexto}</td>
                 <td>
-                  <button class="btn-ajustes" title="Ajustes de usuario" onclick="abrirModalAjusteUsuario(${u.id_usuario}, '${u.nombre ? u.nombre.replace(/'/g,"\\'") : ''}', ${u.deshabilitado ? 'true' : 'false'}, ${u.bloqueado ? 'true' : 'false'})">&#9881;</button>
+                  <button class="btn-ajustes" title="Ajustes de usuario" onclick="abrirModalAjusteUsuario(${u.id_usuario}, '${u.nombre ? u.nombre.replace(/'/g,"\\'") : ''}', ${u.deshabilitado ? 'true' : 'false'}, ${u.bloqueado ? 'true' : 'false'})">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+                  </button>
                 </td>
             `;
             tbody.appendChild(tr);
         });
         mostrarPaginacion();
     }
-
     function mostrarPaginacion() {
         const totalPaginas = Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
         const paginacion = document.getElementById('paginacion');
         paginacion.innerHTML = '';
+        if (totalPaginas <= 1) return;
         for (let i = 1; i <= totalPaginas; i++) {
             const btn = document.createElement('button');
             btn.textContent = i;
@@ -444,8 +675,6 @@
             paginacion.appendChild(btn);
         }
     }
-
-    // Abrir modal de ajustes
     window.abrirModalAjusteUsuario = function(id, nombre, deshabilitado, bloqueado) {
         usuarioSeleccionadoId = id;
         usuarioSeleccionadoNombre = nombre;
@@ -462,8 +691,6 @@
         ajusteUsuarioModal.classList.add('open');
         document.body.style.overflow = "hidden";
     }
-
-    // BOTONES DE AJUSTES 
     document.getElementById('btnDeshabilitarUsuario').onclick = function() {
         if (usuarioSeleccionadoId && confirm('¿Estás seguro de deshabilitar este usuario?')) {
             const usuario_actual = getUsuarioActual();
@@ -554,8 +781,6 @@
             });
         }
     }
-
-    // Cargar roles dinámicamente
     function cargarRoles() {
         fetch('http://localhost:3000/api/roles')
         .then(res => res.json())
@@ -573,8 +798,6 @@
             select.innerHTML = '<option value="">Seleccionar rol...</option>';
         });
     }
-
-    // Cargar grupos dinámicamente
     function cargarGrupos() {
         fetch('http://localhost:3000/api/grupos')
         .then(res => res.json())
@@ -592,8 +815,6 @@
             select.innerHTML = '<option value="">Seleccionar grupo...</option>';
         });
     }
-
-    // Función para cargar usuarios
     function cargarUsuarios() {
         fetch('http://localhost:3000/api/usuarios')
             .then(res => res.json())
@@ -606,20 +827,14 @@
                 document.getElementById('mensaje').className = 'mensaje error';
             });
     }
-
-    // Llamar al cargar la página
     cargarUsuarios();
     cargarRoles();
     cargarGrupos();
-
-    // Filtrar por búsqueda
     document.getElementById('busquedaUsuario').addEventListener('input', aplicarFiltrosYMostrar);
     document.getElementById('usuariosPorPagina').addEventListener('change', function() {
         paginaActual = 1;
         mostrarUsuarios();
     });
-
-    // Función para agregar usuario 
     document.getElementById('formAgregarUsuario').addEventListener('submit', function(e) {
         e.preventDefault();
         const nombre = document.getElementById('nombre').value.trim();
@@ -627,15 +842,12 @@
         const dni = document.getElementById('dni').value.trim();
         const id_rol = parseInt(document.getElementById('id_rol').value, 10);
         const id_grupo = parseInt(document.getElementById('id_grupo').value, 10);
-
-        // Tomar usuario del localStorage para enviar usuario_actual
         const usuario_actual = JSON.parse(localStorage.getItem("usuario"));
         if (!usuario_actual || !usuario_actual.id_usuario || !usuario_actual.rol) {
             document.getElementById('mensaje').textContent = "Debe iniciar sesión como administrador o soporte.";
             document.getElementById('mensaje').className = 'mensaje error';
             return;
         }
-
         fetch('http://localhost:3000/api/usuarios', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -668,7 +880,6 @@
             document.getElementById('mensaje').className = 'mensaje error';
         });
     });
-
     </script>
 </body>
 </html>

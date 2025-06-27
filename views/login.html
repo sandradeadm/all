@@ -66,9 +66,13 @@
     .input-group {
       width: 100%;
       margin-bottom: 18px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
       position: relative;
     }
     .input-group label {
+      grid-column: 1 / -1;
       display: block;
       color: #1976d2;
       font-weight: 600;
@@ -77,8 +81,10 @@
       letter-spacing: .4px;
     }
     .input-group input {
+      grid-column: 1 / 2;
       width: 100%;
-      padding: 12px 11px;
+      height: 48px;
+      padding: 0 12px;
       border-radius: 10px;
       border: 1.5px solid #74ebd5;
       background: #f4fafd;
@@ -88,12 +94,42 @@
       outline: none;
       transition: border .2s, box-shadow .18s;
       box-shadow: 0 1px 5px #74ebd522;
+      box-sizing: border-box;
+      line-height: 48px;
+      vertical-align: middle;
+      display: block;
     }
     .input-group input:focus {
       border-color: #1976d2;
       box-shadow: 0 2px 12px #74ebd533;
     }
-    .login-container button {
+    .input-group .toggle-password {
+      grid-column: 2 / 3;
+      height: 40px;
+      width: 40px;
+      margin-left: -40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      font-size: 1.5em;
+      color: #1976d2b3;
+      z-index: 2;
+      padding: 0;
+      outline: none;
+      cursor: pointer;
+    }
+    .input-group .toggle-password svg {
+      width: 28px;
+      height: 28px;
+      display: block;
+      pointer-events: none;
+    }
+    .input-group .toggle-password:hover {
+      color: #1976d2;
+    }
+    .login-container button[type="submit"] {
       width: 100%;
       padding: 13px 0;
       border-radius: 14px;
@@ -108,7 +144,7 @@
       letter-spacing: .5px;
       transition: background .18s, transform .13s;
     }
-    .login-container button:hover {
+    .login-container button[type="submit"]:hover {
       background: linear-gradient(90deg, #1976d2 65%, #00c6fb 130%);
       transform: scale(1.04);
     }
@@ -129,6 +165,19 @@
       .login-logo img {
         width: 32px;
         height: 32px;
+      }
+      .input-group input {
+        height: 44px;
+        line-height: 44px;
+      }
+      .input-group .toggle-password {
+        height: 34px;
+        width: 34px;
+        margin-left: -34px;
+      }
+      .input-group .toggle-password svg {
+        width: 20px;
+        height: 20px;
       }
     }
   </style>
@@ -153,11 +202,31 @@
     <div class="input-group">
       <label for="clave">Contraseña</label>
       <input type="password" id="clave" placeholder="Contraseña" required>
+      <button type="button" class="toggle-password" id="togglePassword" tabindex="-1" aria-label="Mostrar/ocultar contraseña">
+        <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
     </div>
     <button type="submit">Entrar</button>
     <div class="mensaje" id="mensaje"></div>
   </form>
 <script>
+  // OJITO CONTRASEÑA
+  const claveInput = document.getElementById('clave');
+  const togglePasswordBtn = document.getElementById('togglePassword');
+  const eyeIcon = document.getElementById('eyeIcon');
+  let passwordVisible = false;
+  togglePasswordBtn.addEventListener('click', function() {
+    passwordVisible = !passwordVisible;
+    claveInput.type = passwordVisible ? 'text' : 'password';
+
+    // Cambia el icono SVG según el estado
+    if (passwordVisible) {
+      eyeIcon.innerHTML = `<path d="M17.94 17.94A10.06 10.06 0 0 1 12 19c-7 0-11-7-11-7a21.36 21.36 0 0 1 5.06-6.06M1 1l22 22"/><circle cx="12" cy="12" r="3"/>`;
+    } else {
+      eyeIcon.innerHTML = `<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>`;
+    }
+  });
+
   document.getElementById('formLogin').addEventListener('submit', async function(e){
     e.preventDefault();
     // Envía siempre el usuario en minúsculas (case-insensitive)

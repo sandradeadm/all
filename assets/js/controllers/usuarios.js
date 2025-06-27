@@ -19,10 +19,8 @@ function altaUsuario(nuevoUsuario) {
       alert("Error: " + data.error);
     } else {
       alert("Usuario creado correctamente");
-      // aquí podés refrescar la lista, limpiar el form, etc.
+      // aca se puede refrescar la lista, limpiar el form, etc.
     }
   });
 }
 
-// Ejemplo de uso (ajustá según tu form):
-// altaUsuario({nombre: "nuevo", pass: "abc", id_rol: 2, id_grupo: 1, dni: "12345678"});
